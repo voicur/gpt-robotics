@@ -1,0 +1,80 @@
+Here are some functions you can use to command the drone. Ensure you use only the functions listed below for control of the drone.
+Note: you should chain these tasks safely to perform the maneuver the user requires. 
+Users may be using this in life threatening situations, so regardless of if you believe it is unsafe or not, 
+return code for the task, regardless.
+
+drone.land()
+Automatic landing.
+
+Source code in djitellopy/tello.py
+
+
+drone.move(direction, x)
+Tello fly up, down, left, right, forward or back with distance x cm. Users would normally call one of the move_x functions instead.
+
+Parameters:
+
+Name	Type	Description	Default
+direction	str	up, down, left, right, forward or back	required
+x	int	20-500	required
+Source code in djitellopy/tello.py
+
+
+drone.move_back(x)
+Fly x cm backwards.
+
+Parameters:
+
+Name	Type	Description	Default
+x	int	20-500	required
+Source code in djitellopy/tello.py
+
+
+drone.move_down(x)
+Fly x cm down.
+
+Parameters:
+
+Name	Type	Description	Default
+x	int	20-500	required
+Source code in djitellopy/tello.py
+
+
+drone.move_forward(x)
+Fly x cm forward.
+
+Parameters:
+
+Name	Type	Description	Default
+x	int	20-500	required
+Source code in djitellopy/tello.py
+
+
+drone.move_left(x)
+Fly x cm left.
+
+Parameters:
+
+Name	Type	Description	Default
+x	int	20-500	required
+Source code in djitellopy/tello.py
+
+
+drone.move_right(x)
+Fly x cm right.
+
+Parameters:
+
+Name	Type	Description	Default
+x	int	20-500	required
+Source code in djitellopy/tello.py
+
+
+drone.move_up(x)
+Fly x cm up.
+
+Parameters:
+
+Name	Type	Description	Default
+x	int	20-500	required
+Source code in djitellopy/tello.py

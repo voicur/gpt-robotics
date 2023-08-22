@@ -4,28 +4,44 @@ import re
 import time
 import threading
 import tkinter as tk
+import cv2
+from PIL import ImageTk, Image
 
 openai.api_key = "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"
 with open("prompt.txt", "r") as promptFile:
     sysprompt = promptFile.read()
 
-battery_percent = 100
 
-def keepActive (pollTime):
+def keepActive(pollTime):
     print("Beginning active daemon")
     while True:
-        battery_percent = drone.query_battery()
+        try:
+            drqb = drone.query_battery()
+            if (drqb != "ok"):
+                battery_percent.set(drqb)
+        except:
+            time.sleep(pollTime / 2)
+
         time.sleep(pollTime)
 
+
+def impData(pollTime):
+    print("Beginning active daemon")
+    while True:
+        altitude.set(drone.query_attitude())
+
+        time.sleep(pollTime)
+
+
+def close():
+    # win.destroy()
+    drone.land()
+    quit()
+
+
 chat_history = [
-    {
-        "role": "system",
-        "content": sysprompt
-    },
-    {
-        "role": "user",
-        "content": "lets start make the drone takeoff"
-    },
+    {"role": "system", "content": sysprompt},
+    {"role": "user", "content": "lets start make the drone takeoff"},
     {
         "role": "assistant",
         "content": """
@@ -34,12 +50,9 @@ drone.connect()
 drone.takeoff()
 ```
 
-This code uses the `drone.connect()` function to connect to the drone on its interface, and `drone.takeoff()` to let the drone takeoff at its current position."""
+This code uses the `drone.connect()` function to connect to the drone on its interface, and `drone.takeoff()` to let the drone takeoff at its current position.""",
     },
-    {
-        "role": "user",
-        "content": "move 10 units up"
-    },
+    {"role": "user", "content": "move 10 units up"},
     {
         "role": "assistant",
         "content": """
@@ -47,10 +60,9 @@ This code uses the `drone.connect()` function to connect to the drone on its int
 drone.move_left(100)
 ```
 
-This code uses the `move_left()` function to move the drone to a new position that is 100 units left from the current position."""
-    }
+This code uses the `move_left()` function to move the drone to a new position that is 100 units left from the current position.""",
+    },
 ]
-
 
 
 def ask(prompt):
@@ -61,9 +73,7 @@ def ask(prompt):
         }
     )
     completion = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=chat_history,
-        temperature=0
+        model="gpt-4", messages=chat_history, temperature=0
     )
     chat_history.append(
         {
@@ -72,6 +82,7 @@ def ask(prompt):
         }
     )
     return chat_history[-1]["content"]
+
 
 code_block_regex = re.compile(r"```(.*?)```", re.DOTALL)
 
@@ -97,62 +108,101 @@ class colors:  # You may need to change color settings
     BLUE = "\033[34m"
 
 
-print("Welcome to the AirSim chatbot! I am ready to help you with your AirSim questions and commands.")
+print(
+    "Welcome to the AirSim chatbot! I am ready to help you with your AirSim questions and commands."
+)
 
 drone = Tello()
 drone.connect()
+drone.streamon()
+
+cap = cv2.VideoCapture(
+    drone.get_udp_video_address() + "?overrun_nonfatal=1&fifo_size=50000000"
+)
+
+def video_stream():
+    _, frame = cap.read()
+    cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+    img = Image.fromarray(cv2image)
+    imgtk = ImageTk.PhotoImage(image=img)
+    imageGrid.imgtk = imgtk
+    imageGrid.configure(image=imgtk)
+    imageGrid.after(1, video_stream) 
 
 root = tk.Tk()
 root.title("Battery Status")
-root.geometry("300x100")
-label = tk.Label(root, textvariable=battery_percent)
-label.pack()
+root.geometry("1080x720")
 
-drone.takeoff()
+app = tk.Frame(root, bg="white")
+app.grid()
+
+imageGrid = tk.Label(app)
+imageGrid.grid(row=3, column=2)
 
 
-guiThread = threading.Thread(target=root.mainloop, daemon=True).start()
+# drone.takeoff()
+
+battery_percent = tk.IntVar()
+altitude = tk.StringVar()
 keepActiveThread = threading.Thread(target=keepActive, args=(5,), daemon=True).start()
+dataThread = threading.Thread(target=impData, args=(0,), daemon=True).start()
 
+tk.Button(app, text= "Close the Window", font=("Calibri",14,"bold"), command=quit).grid(row=1, column=1)
+tk.Button(app, text= "Land Drone", font=("Calibri",14,"bold"), command=drone.land).grid(row=2, column=1)
+tk.Button(app, text= "Emergency Stop Drone", font=("Calibri",14,"bold"), command=drone.emergency).grid(row=3, column=1)
+tk.Button(app, text= "Takeoff Drone", font=("Calibri",14,"bold"), command=drone.takeoff).grid(row=4, column=1)
+battpercent = tk.Label(app, textvariable=battery_percent).grid(row=2,column=2)
+altLabel = tk.Label(app, textvariable=altitude).grid(row=3, column=2)
 
-while True:
-    question = input(colors.YELLOW + "AirSim> " + colors.ENDC)
+try:
+    while True:
+        video_stream()
+        root.mainloop()
 
-    if question == "quit" or question == "exit":
-        break
+        question = input(colors.YELLOW + "AirSim> " + colors.ENDC)
 
-    if question == "emstop" or question == "emergency" or question == "terminate":
-        drone.emergency()
-        break
-    
-    if question == "stop" or question == "land":
+        # Shortcuts without AI
+        if question == "quit" or question == "exit":
+            break
+
+        if question == "stop" or question == "land":
+            drone.land()
+            continue
+
+        if question == "clear":
+            os.system("cls")
+            continue
+
+        # Error catching
+        if question == "emstop" or question == "emergency" or question == "terminate":
+            drone.emergency()
+            break
+
+        # response = ask(question)
+
+        # print(f"\n{response}\n")
+
+        # code = extract_python_code(response)
+        # if code is not None:
+        #     drone.query_active()
+        #     print(code)
+        #     shouldRun = input(">>> is the code ok to run? (yes/*) <<< ")
+        #     if (shouldRun == "yes"):
+        #         print("Please wait while I run the code in AirReal...")
+        #         try:
+        #             exec(code)
+        #         except Exception as e:
+        #             print(e)
+        #             a = input("Shutdown? ")
+        #             if (a == "yes"):
+        #                 drone.emergency()
+        #             break
+        #     print("Done!\n")
+
+except KeyboardInterrupt:
+    exit(1)
+finally:
+    try:
         drone.land()
-        continue
-
-    if question == "clear":
-        os.system("cls")
-        continue
-
-    response = ask(question)
-
-    print(f"\n{response}\n")
-
-    code = extract_python_code(response)
-    if code is not None:
-        drone.query_active()
-        print(code)
-        shouldRun = input(">>> is the code ok to run? (yes/*) <<< ")
-        if (shouldRun == "yes"):
-            print("Please wait while I run the code in AirReal...")
-            try:
-                exec(code)
-            except Exception as e:
-                print(e)
-                a = input("Shutdown? ")
-                if (a == "yes"): 
-                    drone.emergency()
-                break
-        print("Done!\n")
-
-drone.land()
-
+    except:
+        print("Errored.")
