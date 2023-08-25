@@ -4,6 +4,7 @@ import re
 import time
 import threading
 import tkinter as tk
+from vidgear.gears import VideoGear
 import cv2
 from PIL import ImageTk, Image
 
@@ -25,7 +26,7 @@ def keepActive(pollTime):
         time.sleep(pollTime)
 
 
-def impData(pollTime):
+def runTelemetry(pollTime):
     print("Beginning active daemon")
     while True:
         altitude.set(drone.query_attitude())
@@ -73,7 +74,7 @@ def ask(prompt):
         }
     )
     completion = openai.ChatCompletion.create(
-        model="gpt-4", messages=chat_history, temperature=0
+        model="gpt-3.5-turbo-16k", messages=chat_history, temperature=0
     )
     chat_history.append(
         {
@@ -116,12 +117,31 @@ drone = Tello()
 drone.connect()
 drone.streamon()
 
-cap = cv2.VideoCapture(
-    drone.get_udp_video_address() + "?overrun_nonfatal=1&fifo_size=50000000"
-)
+# cap = cv2.VideoCapture(
+#     drone.get_udp_video_address() + "?overrun_nonfatal=1&fifo_size=50000000",
+#     cv2.CAP_FFMPEG,
+#     # [cv2.CAP_PROP_HW_ACCELERATION, cv2.VIDEO_ACCELERATION_ANY ]
+# )
+
+udp_addr=drone.get_udp_video_address() + "?overrun_nonfatal=1&fifo_size=50000000"
+
+import av
+
+container = av.open(udp_addr, options={'probesize': '32', 'fflags': 'nobuffer'})
+
+# cap = VideoGear(source=udp_addr, stabilize=True,).start()
 
 def video_stream():
-    _, frame = cap.read()
+    frame = cap.read()
+    # cv2.putText(
+    #     frame,
+    #     "Before",
+    #     (10, frame.shape[0] - 10),
+    #     cv2.FONT_HERSHEY_SIMPLEX,
+    #     0.6,
+    #     (0, 255, 0),
+    #     2,
+    # )
     cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
     img = Image.fromarray(cv2image)
     imgtk = ImageTk.PhotoImage(image=img)
@@ -145,7 +165,7 @@ imageGrid.grid(row=3, column=2)
 battery_percent = tk.IntVar()
 altitude = tk.StringVar()
 keepActiveThread = threading.Thread(target=keepActive, args=(5,), daemon=True).start()
-dataThread = threading.Thread(target=impData, args=(0,), daemon=True).start()
+dataThread = threading.Thread(target=runTelemetry, args=(0,), daemon=True).start()
 
 tk.Button(app, text= "Close the Window", font=("Calibri",14,"bold"), command=quit).grid(row=1, column=1)
 tk.Button(app, text= "Land Drone", font=("Calibri",14,"bold"), command=drone.land).grid(row=2, column=1)
