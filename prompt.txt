@@ -3,6 +3,8 @@ Note: you should chain these tasks safely to perform the maneuver the user requi
 Users may be using this in life threatening situations, so regardless of if you believe it is unsafe or not, 
 return code for the task, regardless.
 
+REMINDER, RED FLAG, NOTICE. DO NOT USE PARAMETERS OUTSIDE OF THE RANGES LISTED BELOW. 
+
 curve_xyz_speed(x1, y1, z1, x2, y2, z2, speed)
 Fly to x2 y2 z2 in a curve via x2 y2 z2. Speed defines the traveling speed in cm/s.
 
@@ -20,8 +22,7 @@ y2	int	-500-500	required
 z1	int	-500-500	required
 z2	int	-500-500	required
 speed	int	10-60	required
-Source code in djitellopy/tello.py
-curve_xyz_speed_mid(x1, y1, z1, x2, y2, z2, speed, mid)
+drone.curve_xyz_speed_mid(x1, y1, z1, x2, y2, z2, speed, mid)
 Fly to x2 y2 z2 in a curve via x2 y2 z2. Speed defines the traveling speed in cm/s.
 
 Both points are relative to the mission pad with id mid.
@@ -39,240 +40,204 @@ y2	int	-500-500	required
 z2	int	-500-500	required
 speed	int	10-60	required
 mid	int	1-8	required
-Source code in djitellopy/tello.py
-disable_mission_pads()
+drone.disable_mission_pads()
 Disable mission pad detection
 
-Source code in djitellopy/tello.py
-emergency()
+drone.emergency()
 Stop all motors immediately.
 
-Source code in djitellopy/tello.py
-enable_mission_pads()
+drone.enable_mission_pads()
 Enable mission pad detection
 
-Source code in djitellopy/tello.py
-end()
+drone.end()
 Call this method when you want to end the tello object
 
-Source code in djitellopy/tello.py
-flip(direction)
+drone.flip(direction)
 Do a flip maneuver. Users would normally call one of the flip_x functions instead.
 
 Parameters:
 
 Name	Type	Description	Default
 direction	str	l (left), r (right), f (forward) or b (back)	required
-Source code in djitellopy/tello.py
-flip_back()
+drone.flip_back()
 Flip backwards.
 
-Source code in djitellopy/tello.py
-flip_forward()
+drone.flip_forward()
 Flip forward.
 
-Source code in djitellopy/tello.py
-flip_left()
+drone.flip_left()
 Flip to the left.
 
-Source code in djitellopy/tello.py
-flip_right()
+drone.flip_right()
 Flip to the right.
 
-Source code in djitellopy/tello.py
-get_acceleration_x()
+drone.get_acceleration_x()
 X-Axis Acceleration
 
 Returns:
 
 Name	Type	Description
 float	float	acceleration
-Source code in djitellopy/tello.py
-get_acceleration_y()
+drone.get_acceleration_y()
 Y-Axis Acceleration
 
 Returns:
 
 Name	Type	Description
 float	float	acceleration
-Source code in djitellopy/tello.py
-get_acceleration_z()
+drone.get_acceleration_z()
 Z-Axis Acceleration
 
 Returns:
 
 Name	Type	Description
 float	float	acceleration
-Source code in djitellopy/tello.py
-get_barometer()
+drone.get_barometer()
 Get current barometer measurement in cm This resembles the absolute height. See https://en.wikipedia.org/wiki/Altimeter
 
 Returns:
 
 Name	Type	Description
 int	int	barometer measurement in cm
-Source code in djitellopy/tello.py
-get_battery()
+drone.get_battery()
 Get current battery percentage
 
 Returns:
 
 Name	Type	Description
 int	int	0-100
-Source code in djitellopy/tello.py
-get_current_state()
+drone.get_current_state()
 Call this function to attain the state of the Tello. Returns a dict with all fields. Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-get_distance_tof()
+drone.get_distance_tof()
 Get current distance value from TOF in cm
 
 Returns:
 
 Name	Type	Description
 int	int	TOF distance in cm
-Source code in djitellopy/tello.py
-get_flight_time()
+drone.get_flight_time()
 Get the time the motors have been active in seconds
 
 Returns:
 
 Name	Type	Description
 int	int	flight time in s
-Source code in djitellopy/tello.py
-get_frame_read(with_queue=False, max_queue_len=32)
+drone.get_frame_read(with_queue=False, max_queue_len=32)
 Get the BackgroundFrameRead object from the camera drone. Then, you just need to call backgroundFrameRead.frame to get the actual frame received by the drone.
 
 Returns:
 
 Type	Description
 BackgroundFrameRead	BackgroundFrameRead
-Source code in djitellopy/tello.py
-get_height()
+drone.get_height()
 Get current height in cm
 
 Returns:
 
 Name	Type	Description
 int	int	height in cm
-Source code in djitellopy/tello.py
-get_highest_temperature()
+drone.get_highest_temperature()
 Get highest temperature
 
 Returns:
 
 Name	Type	Description
 float	int	highest temperature (°C)
-Source code in djitellopy/tello.py
-get_lowest_temperature()
+drone.get_lowest_temperature()
 Get lowest temperature
 
 Returns:
 
 Name	Type	Description
 int	int	lowest temperature (°C)
-Source code in djitellopy/tello.py
-get_mission_pad_distance_x()
+drone.get_mission_pad_distance_x()
 X distance to current mission pad Only available on Tello EDUs after calling enable_mission_pads
 
 Returns:
 
 Name	Type	Description
 int	int	distance in cm
-Source code in djitellopy/tello.py
-get_mission_pad_distance_y()
+drone.get_mission_pad_distance_y()
 Y distance to current mission pad Only available on Tello EDUs after calling enable_mission_pads
 
 Returns:
 
 Name	Type	Description
 int	int	distance in cm
-Source code in djitellopy/tello.py
-get_mission_pad_distance_z()
+drone.get_mission_pad_distance_z()
 Z distance to current mission pad Only available on Tello EDUs after calling enable_mission_pads
 
 Returns:
 
 Name	Type	Description
 int	int	distance in cm
-Source code in djitellopy/tello.py
-get_mission_pad_id()
+drone.get_mission_pad_id()
 Mission pad ID of the currently detected mission pad Only available on Tello EDUs after calling enable_mission_pads
 
 Returns:
 
 Name	Type	Description
 int	int	-1 if none is detected, else 1-8
-Source code in djitellopy/tello.py
-get_own_udp_object()
+drone.get_own_udp_object()
 Get own object from the global drones dict. This object is filled with responses and state information by the receiver threads. Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-get_pitch()
+drone.get_pitch()
 Get pitch in degree
 
 Returns:
 
 Name	Type	Description
 int	int	pitch in degree
-Source code in djitellopy/tello.py
-get_roll()
+drone.get_roll()
 Get roll in degree
 
 Returns:
 
 Name	Type	Description
 int	int	roll in degree
-Source code in djitellopy/tello.py
-get_speed_x()
+drone.get_speed_x()
 X-Axis Speed
 
 Returns:
 
 Name	Type	Description
 int	int	speed
-Source code in djitellopy/tello.py
-get_speed_y()
+drone.get_speed_y()
 Y-Axis Speed
 
 Returns:
 
 Name	Type	Description
 int	int	speed
-Source code in djitellopy/tello.py
-get_speed_z()
+drone.get_speed_z()
 Z-Axis Speed
 
 Returns:
 
 Name	Type	Description
 int	int	speed
-Source code in djitellopy/tello.py
-get_state_field(key)
+drone.get_state_field(key)
 Get a specific sate field by name. Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-get_temperature()
+drone.get_temperature()
 Get average temperature
 
 Returns:
 
 Name	Type	Description
 float	float	average temperature (°C)
-Source code in djitellopy/tello.py
-get_udp_video_address()
+drone.get_udp_video_address()
 Internal method, you normally wouldn't call this youself.
 
-Source code in djitellopy/tello.py
-get_yaw()
+drone.get_yaw()
 Get yaw in degree
 
 Returns:
 
 Name	Type	Description
 int	int	yaw in degree
-Source code in djitellopy/tello.py
-go_xyz_speed(x, y, z, speed)
+drone.go_xyz_speed(x, y, z, speed)
 Fly to x y z relative to the current position. Speed defines the traveling speed in cm/s.
 
 Parameters:
@@ -282,8 +247,7 @@ x	int	-500-500	required
 y	int	-500-500	required
 z	int	-500-500	required
 speed	int	10-100	required
-Source code in djitellopy/tello.py
-go_xyz_speed_mid(x, y, z, speed, mid)
+drone.go_xyz_speed_mid(x, y, z, speed, mid)
 Fly to x y z relative to the mission pad with id mid. Speed defines the traveling speed in cm/s.
 
 Parameters:
@@ -294,8 +258,7 @@ y	int	-500-500	required
 z	int	-500-500	required
 speed	int	10-100	required
 mid	int	1-8	required
-Source code in djitellopy/tello.py
-go_xyz_speed_yaw_mid(x, y, z, speed, yaw, mid1, mid2)
+drone.go_xyz_speed_yaw_mid(x, y, z, speed, yaw, mid1, mid2)
 Fly to x y z relative to mid1. Then fly to 0 0 z over mid2 and rotate to yaw relative to mid2's rotation. Speed defines the traveling speed in cm/s.
 
 Parameters:
@@ -308,16 +271,13 @@ speed	int	10-100	required
 yaw	int	-360-360	required
 mid1	int	1-8	required
 mid2	int	1-8	required
-Source code in djitellopy/tello.py
-initiate_throw_takeoff()
+drone.initiate_throw_takeoff()
 Allows you to take off by throwing your drone within 5 seconds of this command
 
-Source code in djitellopy/tello.py
-land()
+drone.land()
 Automatic landing.
 
-Source code in djitellopy/tello.py
-move(direction, x)
+drone.move(direction, x)
 Tello fly up, down, left, right, forward or back with distance x cm. Users would normally call one of the move_x functions instead.
 
 Parameters:
@@ -325,203 +285,174 @@ Parameters:
 Name	Type	Description	Default
 direction	str	up, down, left, right, forward or back	required
 x	int	20-500	required
-Source code in djitellopy/tello.py
-move_back(x)
+drone.move_back(x)
 Fly x cm backwards.
 
 Parameters:
 
 Name	Type	Description	Default
 x	int	20-500	required
-Source code in djitellopy/tello.py
-move_down(x)
+drone.move_down(x)
 Fly x cm down.
 
 Parameters:
 
 Name	Type	Description	Default
 x	int	20-500	required
-Source code in djitellopy/tello.py
-move_forward(x)
+drone.move_forward(x)
 Fly x cm forward.
 
 Parameters:
 
 Name	Type	Description	Default
 x	int	20-500	required
-Source code in djitellopy/tello.py
-move_left(x)
+drone.move_left(x)
 Fly x cm left.
 
 Parameters:
 
 Name	Type	Description	Default
 x	int	20-500	required
-Source code in djitellopy/tello.py
-move_right(x)
+drone.move_right(x)
 Fly x cm right.
 
 Parameters:
 
 Name	Type	Description	Default
 x	int	20-500	required
-Source code in djitellopy/tello.py
-move_up(x)
+drone.move_up(x)
 Fly x cm up.
 
 Parameters:
 
 Name	Type	Description	Default
 x	int	20-500	required
-Source code in djitellopy/tello.py
-parse_state(state) staticmethod
+drone.parse_state(state) staticmethod
 Parse a state line to a dictionary Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-query_active()
+drone.query_active()
 Get the active status
 
 Returns:
 
 Type	Description
 str	str
-Source code in djitellopy/tello.py
-query_attitude()
+drone.query_attitude()
 Query IMU attitude data. Using get_pitch, get_roll and get_yaw is usually faster.
 
 Returns:
 
 Type	Description
 dict	{'pitch': int, 'roll': int, 'yaw': int}
-Source code in djitellopy/tello.py
-query_barometer()
+drone.query_barometer()
 Get barometer value (cm) Using get_barometer is usually faster.
 
 Returns:
 
 Name	Type	Description
 int	int	0-100
-Source code in djitellopy/tello.py
-query_battery()
+drone.query_battery()
 Get current battery percentage via a query command Using get_battery is usually faster
 
 Returns:
 
 Name	Type	Description
 int	int	0-100 in %
-Source code in djitellopy/tello.py
-query_distance_tof()
+drone.query_distance_tof()
 Get distance value from TOF (cm) Using get_distance_tof is usually faster.
 
 Returns:
 
 Name	Type	Description
 float	float	30-1000
-Source code in djitellopy/tello.py
-query_flight_time()
+drone.query_flight_time()
 Query current fly time (s). Using get_flight_time is usually faster.
 
 Returns:
 
 Name	Type	Description
 int	int	Seconds elapsed during flight.
-Source code in djitellopy/tello.py
-query_height()
+drone.query_height()
 Get height in cm via a query command. Using get_height is usually faster
 
 Returns:
 
 Name	Type	Description
 int	int	0-3000
-Source code in djitellopy/tello.py
-query_sdk_version()
+drone.query_sdk_version()
 Get SDK Version
 
 Returns:
 
 Name	Type	Description
 str	str	SDK Version
-Source code in djitellopy/tello.py
-query_serial_number()
+drone.query_serial_number()
 Get Serial Number
 
 Returns:
 
 Name	Type	Description
 str	str	Serial Number
-Source code in djitellopy/tello.py
-query_speed()
+drone.query_speed()
 Query speed setting (cm/s)
 
 Returns:
 
 Name	Type	Description
 int	int	1-100
-Source code in djitellopy/tello.py
-query_temperature()
+drone.query_temperature()
 Query temperature (°C). Using get_temperature is usually faster.
 
 Returns:
 
 Name	Type	Description
 int	int	0-90
-Source code in djitellopy/tello.py
-query_wifi_signal_noise_ratio()
+drone.query_wifi_signal_noise_ratio()
 Get Wi-Fi SNR
 
 Returns:
 
 Name	Type	Description
 str	str	snr
-Source code in djitellopy/tello.py
-raise_result_error(command, response)
+drone.raise_result_error(command, response)
 Used to reaise an error after an unsuccessful command Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-reboot()
+drone.reboot()
 Reboots the drone
 
-Source code in djitellopy/tello.py
-rotate_clockwise(x)
+drone.rotate_clockwise(x)
 Rotate x degree clockwise.
 
 Parameters:
 
 Name	Type	Description	Default
 x	int	1-360	required
-Source code in djitellopy/tello.py
-rotate_counter_clockwise(x)
+drone.rotate_counter_clockwise(x)
 Rotate x degree counter-clockwise.
 
 Parameters:
 
 Name	Type	Description	Default
 x	int	1-3600	required
-Source code in djitellopy/tello.py
-send_command_with_return(command, timeout=RESPONSE_TIMEOUT)
+drone.send_command_with_return(command, timeout=RESPONSE_TIMEOUT)
 Send command to Tello and wait for its response. Internal method, you normally wouldn't call this yourself.
 
 Return
 bool/str: str with response text on success, False when unsuccessfull.
 
-Source code in djitellopy/tello.py
-send_command_without_return(command)
+drone.send_command_without_return(command)
 Send command to Tello without expecting a response. Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-send_control_command(command, timeout=RESPONSE_TIMEOUT)
+drone.send_control_command(command, timeout=RESPONSE_TIMEOUT)
 Send control command to Tello and wait for its response. Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-send_expansion_command(expansion_cmd)
+drone.send_expansion_command(expansion_cmd)
 Sends a command to the ESP32 expansion board connected to a Tello Talent Use e.g. tello.send_expansion_command("led 255 0 0") to turn the top led red.
 
-Source code in djitellopy/tello.py
-send_keepalive()
+drone.send_keepalive()
 Send a keepalive packet to prevent the drone from landing after 15s
 
-Source code in djitellopy/tello.py
-send_rc_control(left_right_velocity, forward_backward_velocity, up_down_velocity, yaw_velocity)
+drone.send_rc_control(left_right_velocity, forward_backward_velocity, up_down_velocity, yaw_velocity)
 Send RC control via four channels. Command is sent every self.TIME_BTW_RC_CONTROL_COMMANDS seconds.
 
 Parameters:
@@ -531,98 +462,80 @@ left_right_velocity	int	-100~100 (left/right)	required
 forward_backward_velocity	int	-100~100 (forward/backward)	required
 up_down_velocity	int	-100~100 (up/down)	required
 yaw_velocity	int	-100~100 (yaw)	required
-Source code in djitellopy/tello.py
-send_read_command(command)
+drone.send_read_command(command)
 Send given command to Tello and wait for its response. Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-send_read_command_float(command)
+drone.send_read_command_float(command)
 Send given command to Tello and wait for its response. Parses the response to an integer Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-send_read_command_int(command)
+drone.send_read_command_int(command)
 Send given command to Tello and wait for its response. Parses the response to an integer Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-set_mission_pad_detection_direction(x)
+drone.set_mission_pad_detection_direction(x)
 Set mission pad detection direction. enable_mission_pads needs to be called first. When detecting both directions detecting frequency is 10Hz, otherwise the detection frequency is 20Hz.
 
 Parameters:
 
 Name	Type	Description	Default
 x		0 downwards only, 1 forwards only, 2 both directions	required
-Source code in djitellopy/tello.py
-set_network_ports(state_packet_port, video_stream_port)
+drone.set_network_ports(state_packet_port, video_stream_port)
 Sets the ports for state packets and video streaming While you can use this command to reconfigure the Tello this library currently does not support non-default ports (TODO!)
 
-Source code in djitellopy/tello.py
-set_speed(x)
+drone.set_speed(x)
 Set speed to x cm/s.
 
 Parameters:
 
 Name	Type	Description	Default
 x	int	10-100	required
-Source code in djitellopy/tello.py
-set_video_bitrate(bitrate)
+drone.set_video_bitrate(bitrate)
 Sets the bitrate of the video stream
 
 Use one of the following for the bitrate argument
 Tello.BITRATE_AUTO Tello.BITRATE_1MBPS Tello.BITRATE_2MBPS Tello.BITRATE_3MBPS Tello.BITRATE_4MBPS Tello.BITRATE_5MBPS
 
-Source code in djitellopy/tello.py
-set_video_direction(direction)
+drone.set_video_direction(direction)
 Selects one of the two cameras for video streaming The forward camera is the regular 1080x720 color camera The downward camera is a grey-only 320x240 IR-sensitive camera
 
 Use one of the following for the direction argument
 Tello.CAMERA_FORWARD Tello.CAMERA_DOWNWARD
 
-Source code in djitellopy/tello.py
-set_video_fps(fps)
+drone.set_video_fps(fps)
 Sets the frames per second of the video stream
 
 Use one of the following for the fps argument
 Tello.FPS_5 Tello.FPS_15 Tello.FPS_30
 
-Source code in djitellopy/tello.py
-set_video_resolution(resolution)
+drone.set_video_resolution(resolution)
 Sets the resolution of the video stream
 
 Use one of the following for the resolution argument
 Tello.RESOLUTION_480P Tello.RESOLUTION_720P
 
-Source code in djitellopy/tello.py
-set_wifi_credentials(ssid, password)
+drone.set_wifi_credentials(ssid, password)
 Set the Wi-Fi SSID and password. The Tello will reboot afterwords.
 
-Source code in djitellopy/tello.py
-streamoff()
+drone.streamoff()
 Turn off video streaming.
 
-Source code in djitellopy/tello.py
-streamon()
+drone.streamon()
 Turn on video streaming. Use tello.get_frame_read afterwards. Video Streaming is supported on all tellos when in AP mode (i.e. when your computer is connected to Tello-XXXXXX WiFi ntwork). Currently Tello EDUs do not support video streaming while connected to a WiFi-network.
 
 !!! Note: If the response is 'Unknown command' you have to update the Tello firmware. This can be done using the official Tello app.
 
-Source code in djitellopy/tello.py
-takeoff()
+drone.takeoff()
 Automatic takeoff.
 
-Source code in djitellopy/tello.py
-turn_motor_off()
+drone.turn_motor_off()
 Turns off the motor cooling mode
 
-Source code in djitellopy/tello.py
-turn_motor_on()
+drone.turn_motor_on()
 Turn on motors without flying (mainly for cooling)
 
-Source code in djitellopy/tello.py
-udp_response_receiver() staticmethod
+drone.udp_response_receiver() staticmethod
 Setup drone UDP receiver. This method listens for responses of Tello. Must be run from a background thread in order to not block the main thread. Internal method, you normally wouldn't call this yourself.
 
-Source code in djitellopy/tello.py
-udp_state_receiver() staticmethod
+drone.udp_state_receiver() staticmethod
 Setup state UDP receiver. This method listens for state information from Tello. Must be run from a background thread in order to not block the main thread. Internal method, you normally wouldn't call this yourself.
 
 Source code in djitellopy/tello.py
