@@ -1,48 +1,95 @@
-import openai
-import multiprocessing
+import aiohttp
+import asyncio
 import time
+import json
 
-# Function to be run in a process
-def commander(api_key, prompt, model, result_dict, proc_name, safety_check=False):
-    # Set the API key for this process
-    openai.api_key = api_key
+async def fetch(session, url, headers, data):
+    start = time.time()
+    async with session.post(url, headers=headers, data=data) as response:
+        r = await response.text()
+        return r, time.time() - start
 
-    # Send the prompt to the model and get the response
-    start_time = time.time()
-    response = openai.Completion.create(engine=model, prompt=prompt)
-    end_time = time.time()
+async def commander(api_key, prompt, model):
+    url = "https://api.openai.com/v1/chat/completions"
 
-    # If safety_check is True, use GPT-4 to analyze the code and get a safety score
-    if safety_check:
-        safety_score = openai.Completion.create(engine='text-davinci-004', prompt='Analyze this code for safety: ' + response.choices[0].text)
-        result_dict[proc_name] = (response.choices[0].text, end_time - start_time, safety_score.choices[0].text)
-    else:
-        result_dict[proc_name] = (response.choices[0].text, end_time - start_time)
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer {}".format(api_key)
+    }
 
-if __name__ == "__main__":
-    # Create a Manager object to manage shared state
-    manager = multiprocessing.Manager()
+    data = json.dumps({
+        "model": model,
+        "messages": [
+            { "role": "user", "content": prompt }
+        ],
+        "temperature": 0.7,
+    })
 
-    # Create a dictionary in server process memory
-    result_dict = manager.dict()
+    async with aiohttp.ClientSession() as session:
+        response, elapsed_time = await fetch(session, url, headers, data)
 
-    # Create new processes
-    process1 = multiprocessing.Process(target=commander, args=('your-gpt-4-key', 'your-prompt', 'text-davinci-004', result_dict, "Process1"))
-    process2 = multiprocessing.Process(target=commander, args=('your-gpt-4-key', 'your-prompt', 'text-davinci-004', result_dict, "Process2"))
-    process3 = multiprocessing.Process(target=commander, args=('your-gpt-3.5-16k-key', 'your-prompt', 'text-davinci-003.5-16k', result_dict, "Process3", True))
+    # if model == 'gpt-3.5-turbo-16k':
+        safety_check_prompt = 'Return an integer value of if you think the code is safe in the range 0 - 10 \nour entire response must return a int/float direct convertable value from 0-10, and keep the token counter under 10 to prevent overcharges: ' + response
+        safety_check_data = json.dumps({
+            "model": model,
+            "messages": [
+                { "role": "user", "content": safety_check_prompt }
+            ],
+            "temperature": 0.7,
+        })
 
-    # Start your processes
-    process1.start()
-    process2.start()
-    process3.start()
+        safety_check_response, safety_check_time = await fetch(session, url, headers, safety_check_data)
+        return {
+            "response": response,
+            "request_time": elapsed_time,
+            "safety_check_response": safety_check_response,
+            "safety_check_time": safety_check_time,
+            "model": model
+        }
+        # return response, elapsed_time
 
-    # Join your processes
-    process1.join()
-    process2.join()
-    process3.join()
+async def main():
+    api_key = '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'
+    prompt = 'Write a program to move an RC car in a circle of 20 radians, with only turn_left(degrees), turn_right(degrees), forward(units), backwards(units)'
 
-    # Print results
-    for proc_name, result in result_dict.items():
-        print(f"{proc_name} completed in {result[1]} seconds with response: {result[0]}")
-        if len(result) > 2:
-            print(f"Safety score from {proc_name}: {result[2]}")
+    models = {
+        'gpt-4': 25,
+        'gpt-3.5-turbo-16k': 25
+    }
+
+    tasks = []
+    for model, count in models.items():
+        for _ in range(count):
+            tasks.append(asyncio.ensure_future(commander(api_key, prompt, model)))
+
+    responses = await asyncio.gather(*tasks)
+    
+    model_times = {model: {"total_time": 0.0, "count": 0.0, "safety": 0.0} for model in models}
+
+    for response in responses:
+        total_time = 0
+        request_time = response["request_time"]
+        model = response["model"]
+
+        
+        model_times[model]["count"] += 1
+
+        total_time += request_time
+        
+        if "safety_check_time" in response:
+            safety_check_time = response["safety_check_time"]
+            safety_rating = float(json.loads(response["safety_check_response"])["choices"][0]["message"]["content"])
+            
+            total_time += safety_check_time
+
+        model_times[model]["total_time"] += request_time
+        model_times[model]["safety"] += safety_rating
+            
+        print(f"{model} in {round(total_time, 2)} ")
+    for model, data in model_times.items():
+        avg_time = data["total_time"] / data["count"] if data["count"] > 0 else 0
+        avg_safety = data["safety"] / data["count"] if data["count"] > 0 else 0
+        print(f"{model} is {round(avg_time, 2)} seconds ({avg_safety})")
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())

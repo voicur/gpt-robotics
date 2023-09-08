@@ -116,6 +116,9 @@ drone.move_up(10)
 # ]
 
 
+def process_gpt_queries ():
+    doSus()
+
 def ask(prompt):
     chat_history.append(
         {
@@ -205,21 +208,13 @@ drone = "hi" #Tello()
 # battpercent = tk.Label(app, textvariable=battery_percent).grid(row=2,column=2)
 # altLabel = tk.Label(app, textvariable=altitude).grid(row=3, column=2)
 
+def initialize_drone ():
+
+def initialize_video_feed ():
+
+def create_gui ():
+
 try:
-    # face_center = ObjCenter("./facedet.xml")
-    # pan_pid = PID(kP=0.7, kI=0.0001, kD=0.1)
-    # tilt_pid = PID(kP=0.7, kI=0.0001, kD=0.1)
-
-    # forward_tilt_pid = PID(kP=0.2, kI=0.0001, kD=0.1)
-
-    # pan_pid.initialize()
-    # tilt_pid.initialize()
-    # forward_tilt_pid.initialize()
-
-    # drone.takeoff()
-    # time.sleep(5)
-    # drone.move_up(70)
-
     while True:
     #     # read 1920*1080*3 bytes (= 1 frame)
     #     raw_image = pipe.stdout.read(960 * 720 * 3)
@@ -231,113 +226,6 @@ try:
 
     #     frame = imutils.resize(image, width=400)
     #     H, W, _ = frame.shape
-
-    #     # calculate the center of the frame as this is (ideally) where
-    #     # we will we wish to keep the object
-    #     centerX = W // 2
-    #     centerY = H // 2
-
-    #     # draw a circle in the center of the frame
-    #     cv2.circle(
-    #         frame, center=(centerX, centerY), radius=5, color=(0, 0, 255), thickness=-1
-    #     )
-
-    #     # find the object's location
-    #     frame_center = (centerX, centerY)
-    #     objectLoc = face_center.update(frame, frameCenter=None)
-    #     # print(centerX, centerY, objectLoc)
-    #     max_speed_threshold = 40
-
-    #     ((objX, objY), rect, d) = objectLoc
-    #     if d > 25 or d == -1:
-    #         # then either we got a false face, or we have no faces.
-    #         # the d - distance - value is used to keep the jitter down of false positive faces detected where there
-    #         #                   were none.
-    #         # if it is a false positive, or we cannot determine a distance, just stay put
-    #         # print(int(pan_update), int(tilt_update))
-    #         # if track_face and fly:
-    #         drone.send_rc_control(0, 0, 0, 0)
-    #         continue  # ignore the sample as it is too far from the previous sample
-
-    #     if rect is not None:
-    #         (x, y, w, h) = rect
-    #         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-    #         print(w, " x ", h)
-
-    #         # draw a circle in the center of the face
-    #         cv2.circle(
-    #             frame, center=(objX, objY), radius=5, color=(255, 0, 0), thickness=-1
-    #         )
-
-    #         # Draw line from frameCenter to face center
-    #         cv2.arrowedLine(
-    #             frame, frame_center, (objX, objY), color=(0, 255, 0), thickness=2
-    #         )
-
-    #         # calculate the pan and tilt errors and run through pid controllers
-    #         pan_error = centerX - objX
-    #         pan_update = pan_pid.update(pan_error, sleep=0)
-
-    #         forward_error = 40 - int(w)
-    #         if forward_error > 30:
-    #             forward_error = 30 + forward_error / 6
-    #         forward_tilt = forward_tilt_pid.update(forward_error, sleep=0)
-
-    #         tilt_error = centerY - objY
-    #         tilt_update = tilt_pid.update(tilt_error, sleep=0)
-
-    #         # print(pan_error, int(pan_update), tilt_error, int(tilt_update))
-    #         cv2.putText(
-    #             frame,
-    #             f"X Error: {pan_error} PID: {pan_update:.2f}",
-    #             (20, 30),
-    #             cv2.FONT_HERSHEY_SIMPLEX,
-    #             1,
-    #             (0, 255, 0),
-    #             2,
-    #             cv2.LINE_AA,
-    #         )
-
-    #         cv2.putText(
-    #             frame,
-    #             f"Y Error: {tilt_error} PID: {tilt_update:.2f}",
-    #             (20, 70),
-    #             cv2.FONT_HERSHEY_SIMPLEX,
-    #             1,
-    #             (0, 0, 255),
-    #             2,
-    #             cv2.LINE_AA,
-    #         )
-
-    #         if pan_update > max_speed_threshold:
-    #             pan_update = max_speed_threshold
-    #         elif pan_update < -max_speed_threshold:
-    #             pan_update = -max_speed_threshold
-
-    #         # NOTE: if face is to the right of the drone, the distance will be negative, but
-    #         # the drone has to have positive power so I am flipping the sign
-    #         pan_update = pan_update * -1
-
-    #         if tilt_update > max_speed_threshold:
-    #             tilt_update = max_speed_threshold
-    #         elif tilt_update < -max_speed_threshold:
-    #             tilt_update = -max_speed_threshold
-
-    #         if forward_tilt > max_speed_threshold:
-    #             forward_tilt = max_speed_threshold
-    #         elif forward_tilt < -max_speed_threshold:
-    #             forward_tilt = -max_speed_threshold
-
-    #         print(int(pan_update), int(tilt_update))
-    #         drone.send_rc_control(
-    #             int(pan_update) // 3, int(forward_tilt), int(tilt_update) // 2, 0
-    #         )
-    #     pipe.stdout.flush()
-    #     cv2.imshow("Drone Face Tracking", frame)
-    #     cv2.waitKey(1)
-    #     if cv2.waitKey(1) & 0xFF == ord("q"):
-    #         exit_event.set()
-        # throw away the data in the pipe's buffer.
 
         # root.mainloop()
 
