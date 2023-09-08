@@ -64,17 +64,13 @@ async def main():
 
     responses = await asyncio.gather(*tasks)
     
-    model_times = {model: {"total_time": 0.0, "count": 0.0, "safety": 0.0} for model in models}
+    model_times = {model: {"times": [], "safety_ratings": []} for model in models}
 
     for response in responses:
-        total_time = 0
         request_time = response["request_time"]
         model = response["model"]
 
-        
-        model_times[model]["count"] += 1
-
-        total_time += request_time
+        total_time = request_time
         
         if "safety_check_time" in response:
             safety_check_time = response["safety_check_time"]
@@ -82,14 +78,27 @@ async def main():
             
             total_time += safety_check_time
 
-        model_times[model]["total_time"] += request_time
-        model_times[model]["safety"] += safety_rating
+        model_times[model]["times"].append(total_time)
+        model_times[model]["safety_ratings"].append(safety_rating)
             
         print(f"{model} in {round(total_time, 2)} ")
+    
     for model, data in model_times.items():
-        avg_time = data["total_time"] / data["count"] if data["count"] > 0 else 0
-        avg_safety = data["safety"] / data["count"] if data["count"] > 0 else 0
-        print(f"{model} is {round(avg_time, 2)} seconds ({avg_safety})")
+        if data["times"]:
+            avg_time = sum(data["times"]) / len(data["times"])
+            min_time = min(data["times"])
+            max_time = max(data["times"])
+        else:
+            avg_time = min_time = max_time = 0
+
+        if data["safety_ratings"]:
+            avg_safety = sum(data["safety_ratings"]) / len(data["safety_ratings"])
+            min_safety = min(data["safety_ratings"])
+            max_safety = max(data["safety_ratings"])
+        else:
+            avg_safety = min_safety = max_safety = 0
+
+        print(f"{model}: Avg Time: {round(avg_time, 2)} seconds, Min Time: {round(min_time, 2)} seconds, Max Time: {round(max_time, 2)} seconds, Avg Safety: {round(avg_safety, 2)}, Min Safety: {round(min_safety, 2)}, Max Safety: {round(max_safety, 2)}")
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
