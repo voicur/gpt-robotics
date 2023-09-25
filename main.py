@@ -15,8 +15,7 @@ import imutils
 
 
 openai.api_key = "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"
-with open("prompt.txt", "r") as promptFile:
-    sysprompt = promptFile.read()
+
 
 
 # def keepActive(pollTime):
@@ -45,70 +44,10 @@ def close():
     drone.land()
     quit()
 
-
+with open("prompt.txt", "r") as promptFile:
+    sysprompt = promptFile.read()
 chat_history = [
     {"role": "system", "content": sysprompt},
-        {"role": "user", "content": "Ensure that you only return the python code. Any time wasted means people being killed off.\n\nPrompt: Can you make me go in a circle with radius 20 units"},
-    {
-        "role": "assistant",
-        "content": """
-```python
-drone.curve_xyz_speed(20, 0, 0, 0, 20, 0, 10)
-drone.curve_xyz_speed(0, 20, 0, -20, 0, 0, 10)
-drone.curve_xyz_speed(-20, 0, 0, 0, -20, 0, 10)
-drone.curve_xyz_speed(0, -20, 0, 20, 0, 0, 10)
-```
-""",
-    },
-    {"role": "user", "content": "Prompt: Turn right 45 degrees while also going forward 10 units in the 45 degree direction"},
-    {
-        "role": "assistant",
-        "content": """
-```python
-drone.rotate_clockwise(45)
-drone.move_forward(10)
-```
-""",
-    },
-    {"role": "user", "content": "Error: move_forward(10) out of range [20, 500]"},
-    {
-        "role": "assistant",
-        "content": """
-```python
-drone.rotate_clockwise(45)
-drone.move_forward(30)
-drone.move_backward(20)
-```
-""",
-    },
-    {"role": "user", "content": "Prompt: do a flip please"},
-    {
-        "role": "assistant",
-        "content": """
-```python
-drone.flip('l')
-```
-""",
-    },
-    {"role": "user", "content": "lets start make the drone takeoff"},
-    {
-        "role": "assistant",
-        "content": """
-```python
-drone.connect()
-drone.takeoff()
-```
-""",
-    },
-    {"role": "user", "content": "move 10 units up"},
-    {
-        "role": "assistant",
-        "content": """
-```python
-drone.move_up(10)
-```
-""",
-    },
 ]
 
 # agent_history [

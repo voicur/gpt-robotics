@@ -2,6 +2,10 @@ import aiohttp
 import asyncio
 import time
 import json
+from gpt_prompt_utils import SPLIT_PROMPT, CONSTANTS
+
+with open("safety_prompt.txt", "r") as promptFile:
+    SAFETY_PROMPT = promptFile.read()
 
 class DroneController:
     def __init__(self, api_key):
@@ -34,14 +38,30 @@ class DroneController:
             response, _ = await self.fetch(session, url, headers, data)
         return json.loads(response)["choices"][0]["message"]["content"]
 
+    async def chat_complex(self, prompt, model, messages, temperature=0.7):
+        url = "https://api.openai.com/v1/chat/completions"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {}".format(self.api_key)
+        }
+        data = json.dumps({
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+        })
+        async with aiohttp.ClientSession() as session:
+            response, _ = await self.fetch(session, url, headers, data)
+        return json.loads(response)["choices"][0]["message"]["content"]
+
+    # Ask GPT to split the prompt into individual commands
     async def split_prompt(self, prompt):
-        # Ask GPT to split the prompt into individual commands
-        split_prompt = f"Please split the following prompt into individual commands: '{prompt}'"
-        response = await self.chat(split_prompt, 'gpt-3.5-turbo-16k')
-        # Extract the start and end positions of each command from the response
-        positions = [tuple(map(int, position.split(','))) for position in response.split()]
-        # Extract each command from the prompt using the positions
-        commands = [prompt[start:start+length] for start, length in positions]
+        messages = SPLIT_PROMPT + CONSTANTS       
+        messages.append({ "role": "user", "content": prompt })
+
+        response = await self.chat_complex(prompt, 'gpt-4', messages, 0.5)
+
+        # Get each prompt
+        commands = [i for i in response.split("\n") if i]
         return commands
 
     async def rate_complexity(self, commands):
@@ -73,7 +93,7 @@ class DroneController:
 
 async def main():
     controller = DroneController('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')
-    prompt = 'Turn around and do a 180 then before all of this do a loopity loop'
+    prompt = 'Run to end, turn left, before that fly up 60 feet and you fly up enable the speaker'
     commands = await controller.split_prompt(prompt)
     print(commands)
     # rated_commands = await controller.rate_complexity(commands)
@@ -81,4 +101,4 @@ async def main():
     # await controller.execute_tasks(assigned_commands)
 
 loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+loop.run_until_complete(main()) 
