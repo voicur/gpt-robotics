@@ -3,8 +3,9 @@ import asyncio
 import time
 import json
 import csv
+import sys
 
-from gpt_prompt_utils import MAIN_GPT_PROMPT, CONSTANTS, SAFETY_MODEL_PROMPT
+from prompts.gpt_prompts import MAIN_GPT_PROMPT, CONSTANTS, SAFETY_MODEL_PROMPT
 
 async def fetch(session, url, headers, data):
     start = time.time()
@@ -12,15 +13,29 @@ async def fetch(session, url, headers, data):
         r = await response.text()
         return r, time.time() - start
 
-with open("prompt.txt", "r") as promptFile:
+with open("prompts/docs_prompt.txt", "r") as promptFile:
     SYS_PROMPT = promptFile.read()
 
-with open("safety_prompt.txt", "r") as promptFile:
+with open("prompts/safety_prompt.txt", "r") as promptFile:
     SAFETY_SYS_PROMPT = promptFile.read()
 
 chat_history = [
     {"role": "system", "content": SYS_PROMPT},
 ]
+
+async def exponential_fast_pitch (session, url, headers, data):
+    request_completed = False
+    time_delay = 0.001
+    while (not request_completed):
+        response, elapsed_time = await fetch(session, url, headers, data)
+        if ('error' in response):
+            request_completed = False
+            await asyncio.sleep(time_delay)
+            time_delay *= 1.05;
+        else:
+            request_completed = True
+    return response, elapsed_time
+
 async def commander(api_key, prompt, model):
     url = "https://api.openai.com/v1/chat/completions"
 
@@ -38,8 +53,8 @@ async def commander(api_key, prompt, model):
     })
 
     async with aiohttp.ClientSession() as session:
-        response, elapsed_time = await fetch(session, url, headers, data)
-
+        
+        response, elapsed_time = await exponential_fast_pitch(session, url, headers, data)
         response_returned = json.loads(response)["choices"][0]["message"]["content"]
 
         safety_messages = [
@@ -49,12 +64,12 @@ async def commander(api_key, prompt, model):
         safety_messages.append({ "role": "user", "content": f"Prompt: {prompt}\n\n{response_returned}" })
 
         safety_check_data = json.dumps({
-            "model": model,
+            "model": "gpt-4",
             "messages": safety_messages,
             "temperature": 0.7,
         })
 
-        safety_check_response, safety_check_time = await fetch(session, url, headers, safety_check_data)
+        safety_check_response, safety_check_time = await exponential_fast_pitch(session, url, headers, safety_check_data)
         print(safety_check_response)
         return {
             "response": response,
@@ -71,7 +86,7 @@ async def main():
     prompt = 'Please fly up 6 feet, then turn in a circle with radius 10 feet with the intial point being the center of the circle, but before you do anything else takeoff the drone please'
 
     models = {
-        'gpt-4': 10,
+        'gpt-4': 0,
         'gpt-3.5-turbo-16k': 10
     }
 

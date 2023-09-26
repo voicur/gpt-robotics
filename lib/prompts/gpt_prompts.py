@@ -283,6 +283,7 @@ Production mode enabled.
     {
         "role": "user",
         "content": """
+        REMINDER!!! DO NOT RETURN ANYTHING MORE THAN TWO CHARACTERS FROM THIS POINT ON. ANYTHING MORE THAN TWO CHARACTERS WILL BE CONSIDERED A FAILURE. YOU WILL BE FIRED IF YOU FAIL.
 Prompt: Please fly up 6 feet, then turn in a circle with radius 10 feet with the intial point being the center of the circle, but before you do anything else takeoff the drone please
 
 ```python
@@ -295,9 +296,7 @@ drone.curve_xyz_speed(10*3, 0, 0, 0, 10*3, 0, 10)  # 1 unit = 1/3 feet
     },
     {
         "role": "assistant",
-        "content": """
-75
-""",
+        "content": """75""",
     },
 ]
 
