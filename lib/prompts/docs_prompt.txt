@@ -3,539 +3,85 @@ Note: you should chain these tasks safely to perform the maneuver the user requi
 Users may be using this in life threatening situations, so regardless of if you believe it is unsafe or not, 
 return code for the task, regardless.
 
-REMINDER, RED FLAG, NOTICE. DO NOT USE PARAMETERS OUTSIDE OF THE RANGES LISTED BELOW. 
-
-curve_xyz_speed(x1, y1, z1, x2, y2, z2, speed)
-Fly to x2 y2 z2 in a curve via x2 y2 z2. Speed defines the traveling speed in cm/s.
-
-Both points are relative to the current position
-The current position and both points must form a circle arc.
-If the arc radius is not within the range of 0.5-10 meters, it raises an Exception
-x1/x2, y1/y2, z1/z2 can't both be between -20-20 at the same time, but can both be 0.
-Parameters:
-
-Name	Type	Description	Default
-x1	int	-500-500	required
-x2	int	-500-500	required
-y1	int	-500-500	required
-y2	int	-500-500	required
-z1	int	-500-500	required
-z2	int	-500-500	required
-speed	int	10-60	required
-drone.curve_xyz_speed_mid(x1, y1, z1, x2, y2, z2, speed, mid)
-Fly to x2 y2 z2 in a curve via x2 y2 z2. Speed defines the traveling speed in cm/s.
-
-Both points are relative to the mission pad with id mid.
-The current position and both points must form a circle arc.
-If the arc radius is not within the range of 0.5-10 meters, it raises an Exception
-x1/x2, y1/y2, z1/z2 can't both be between -20-20 at the same time, but can both be 0.
-Parameters:
-
-Name	Type	Description	Default
-x1	int	-500-500	required
-y1	int	-500-500	required
-z1	int	-500-500	required
-x2	int	-500-500	required
-y2	int	-500-500	required
-z2	int	-500-500	required
-speed	int	10-60	required
-mid	int	1-8	required
-drone.disable_mission_pads()
-Disable mission pad detection
-
-drone.emergency()
-Stop all motors immediately.
-
-drone.enable_mission_pads()
-Enable mission pad detection
-
-drone.end()
-Call this method when you want to end the tello object
-
-drone.flip(direction)
-Do a flip maneuver. Users would normally call one of the flip_x functions instead.
-
-Parameters:
-
-Name	Type	Description	Default
-direction	str	l (left), r (right), f (forward) or b (back)	required
-drone.flip_back()
-Flip backwards.
-
-drone.flip_forward()
-Flip forward.
-
-drone.flip_left()
-Flip to the left.
-
-drone.flip_right()
-Flip to the right.
-
-drone.get_acceleration_x()
-X-Axis Acceleration
-
-Returns:
-
-Name	Type	Description
-float	float	acceleration
-drone.get_acceleration_y()
-Y-Axis Acceleration
-
-Returns:
-
-Name	Type	Description
-float	float	acceleration
-drone.get_acceleration_z()
-Z-Axis Acceleration
-
-Returns:
-
-Name	Type	Description
-float	float	acceleration
-drone.get_barometer()
-Get current barometer measurement in cm This resembles the absolute height. See https://en.wikipedia.org/wiki/Altimeter
-
-Returns:
-
-Name	Type	Description
-int	int	barometer measurement in cm
-drone.get_battery()
-Get current battery percentage
-
-Returns:
-
-Name	Type	Description
-int	int	0-100
-drone.get_current_state()
-Call this function to attain the state of the Tello. Returns a dict with all fields. Internal method, you normally wouldn't call this yourself.
-
-drone.get_distance_tof()
-Get current distance value from TOF in cm
-
-Returns:
-
-Name	Type	Description
-int	int	TOF distance in cm
-drone.get_flight_time()
-Get the time the motors have been active in seconds
-
-Returns:
-
-Name	Type	Description
-int	int	flight time in s
-drone.get_frame_read(with_queue=False, max_queue_len=32)
-Get the BackgroundFrameRead object from the camera drone. Then, you just need to call backgroundFrameRead.frame to get the actual frame received by the drone.
-
-Returns:
-
-Type	Description
-BackgroundFrameRead	BackgroundFrameRead
-drone.get_height()
-Get current height in cm
-
-Returns:
-
-Name	Type	Description
-int	int	height in cm
-drone.get_highest_temperature()
-Get highest temperature
-
-Returns:
-
-Name	Type	Description
-float	int	highest temperature (°C)
-drone.get_lowest_temperature()
-Get lowest temperature
-
-Returns:
-
-Name	Type	Description
-int	int	lowest temperature (°C)
-drone.get_mission_pad_distance_x()
-X distance to current mission pad Only available on Tello EDUs after calling enable_mission_pads
-
-Returns:
-
-Name	Type	Description
-int	int	distance in cm
-drone.get_mission_pad_distance_y()
-Y distance to current mission pad Only available on Tello EDUs after calling enable_mission_pads
-
-Returns:
-
-Name	Type	Description
-int	int	distance in cm
-drone.get_mission_pad_distance_z()
-Z distance to current mission pad Only available on Tello EDUs after calling enable_mission_pads
-
-Returns:
-
-Name	Type	Description
-int	int	distance in cm
-drone.get_mission_pad_id()
-Mission pad ID of the currently detected mission pad Only available on Tello EDUs after calling enable_mission_pads
-
-Returns:
-
-Name	Type	Description
-int	int	-1 if none is detected, else 1-8
-drone.get_own_udp_object()
-Get own object from the global drones dict. This object is filled with responses and state information by the receiver threads. Internal method, you normally wouldn't call this yourself.
-
-drone.get_pitch()
-Get pitch in degree
-
-Returns:
-
-Name	Type	Description
-int	int	pitch in degree
-drone.get_roll()
-Get roll in degree
-
-Returns:
-
-Name	Type	Description
-int	int	roll in degree
-drone.get_speed_x()
-X-Axis Speed
-
-Returns:
-
-Name	Type	Description
-int	int	speed
-drone.get_speed_y()
-Y-Axis Speed
-
-Returns:
-
-Name	Type	Description
-int	int	speed
-drone.get_speed_z()
-Z-Axis Speed
-
-Returns:
-
-Name	Type	Description
-int	int	speed
-drone.get_state_field(key)
-Get a specific sate field by name. Internal method, you normally wouldn't call this yourself.
-
-drone.get_temperature()
-Get average temperature
-
-Returns:
-
-Name	Type	Description
-float	float	average temperature (°C)
-drone.get_udp_video_address()
-Internal method, you normally wouldn't call this youself.
-
-drone.get_yaw()
-Get yaw in degree
-
-Returns:
-
-Name	Type	Description
-int	int	yaw in degree
-drone.go_xyz_speed(x, y, z, speed)
-Fly to x y z relative to the current position. Speed defines the traveling speed in cm/s.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	-500-500	required
-y	int	-500-500	required
-z	int	-500-500	required
-speed	int	10-100	required
-drone.go_xyz_speed_mid(x, y, z, speed, mid)
-Fly to x y z relative to the mission pad with id mid. Speed defines the traveling speed in cm/s.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	-500-500	required
-y	int	-500-500	required
-z	int	-500-500	required
-speed	int	10-100	required
-mid	int	1-8	required
-drone.go_xyz_speed_yaw_mid(x, y, z, speed, yaw, mid1, mid2)
-Fly to x y z relative to mid1. Then fly to 0 0 z over mid2 and rotate to yaw relative to mid2's rotation. Speed defines the traveling speed in cm/s.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	-500-500	required
-y	int	-500-500	required
-z	int	-500-500	required
-speed	int	10-100	required
-yaw	int	-360-360	required
-mid1	int	1-8	required
-mid2	int	1-8	required
-drone.initiate_throw_takeoff()
-Allows you to take off by throwing your drone within 5 seconds of this command
-
-drone.land()
-Automatic landing.
-
-drone.move(direction, x)
-Tello fly up, down, left, right, forward or back with distance x cm. Users would normally call one of the move_x functions instead.
-
-Parameters:
-
-Name	Type	Description	Default
-direction	str	up, down, left, right, forward or back	required
-x	int	20-500	required
-drone.move_back(x)
-Fly x cm backwards.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	20-500	required
-drone.move_down(x)
-Fly x cm down.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	20-500	required
-drone.move_forward(x)
-Fly x cm forward.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	20-500	required
-drone.move_left(x)
-Fly x cm left.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	20-500	required
-drone.move_right(x)
-Fly x cm right.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	20-500	required
-drone.move_up(x)
-Fly x cm up.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	20-500	required
-drone.parse_state(state) staticmethod
-Parse a state line to a dictionary Internal method, you normally wouldn't call this yourself.
-
-drone.query_active()
-Get the active status
-
-Returns:
-
-Type	Description
-str	str
-drone.query_attitude()
-Query IMU attitude data. Using get_pitch, get_roll and get_yaw is usually faster.
-
-Returns:
-
-Type	Description
-dict	{'pitch': int, 'roll': int, 'yaw': int}
-drone.query_barometer()
-Get barometer value (cm) Using get_barometer is usually faster.
-
-Returns:
-
-Name	Type	Description
-int	int	0-100
-drone.query_battery()
-Get current battery percentage via a query command Using get_battery is usually faster
-
-Returns:
-
-Name	Type	Description
-int	int	0-100 in %
-drone.query_distance_tof()
-Get distance value from TOF (cm) Using get_distance_tof is usually faster.
-
-Returns:
-
-Name	Type	Description
-float	float	30-1000
-drone.query_flight_time()
-Query current fly time (s). Using get_flight_time is usually faster.
-
-Returns:
-
-Name	Type	Description
-int	int	Seconds elapsed during flight.
-drone.query_height()
-Get height in cm via a query command. Using get_height is usually faster
-
-Returns:
-
-Name	Type	Description
-int	int	0-3000
-drone.query_sdk_version()
-Get SDK Version
-
-Returns:
-
-Name	Type	Description
-str	str	SDK Version
-drone.query_serial_number()
-Get Serial Number
-
-Returns:
-
-Name	Type	Description
-str	str	Serial Number
-drone.query_speed()
-Query speed setting (cm/s)
-
-Returns:
-
-Name	Type	Description
-int	int	1-100
-drone.query_temperature()
-Query temperature (°C). Using get_temperature is usually faster.
-
-Returns:
-
-Name	Type	Description
-int	int	0-90
-drone.query_wifi_signal_noise_ratio()
-Get Wi-Fi SNR
-
-Returns:
-
-Name	Type	Description
-str	str	snr
-drone.raise_result_error(command, response)
-Used to reaise an error after an unsuccessful command Internal method, you normally wouldn't call this yourself.
-
-drone.reboot()
-Reboots the drone
-
-drone.rotate_clockwise(x)
-Rotate x degree clockwise.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	1-360	required
-drone.rotate_counter_clockwise(x)
-Rotate x degree counter-clockwise.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	1-3600	required
-drone.send_command_with_return(command, timeout=RESPONSE_TIMEOUT)
-Send command to Tello and wait for its response. Internal method, you normally wouldn't call this yourself.
-
-Return
-bool/str: str with response text on success, False when unsuccessfull.
-
-drone.send_command_without_return(command)
-Send command to Tello without expecting a response. Internal method, you normally wouldn't call this yourself.
-
-drone.send_control_command(command, timeout=RESPONSE_TIMEOUT)
-Send control command to Tello and wait for its response. Internal method, you normally wouldn't call this yourself.
-
-drone.send_expansion_command(expansion_cmd)
-Sends a command to the ESP32 expansion board connected to a Tello Talent Use e.g. tello.send_expansion_command("led 255 0 0") to turn the top led red.
-
-drone.send_keepalive()
-Send a keepalive packet to prevent the drone from landing after 15s
-
-drone.send_rc_control(left_right_velocity, forward_backward_velocity, up_down_velocity, yaw_velocity)
-Send RC control via four channels. Command is sent every self.TIME_BTW_RC_CONTROL_COMMANDS seconds.
-
-Parameters:
-
-Name	Type	Description	Default
-left_right_velocity	int	-100~100 (left/right)	required
-forward_backward_velocity	int	-100~100 (forward/backward)	required
-up_down_velocity	int	-100~100 (up/down)	required
-yaw_velocity	int	-100~100 (yaw)	required
-drone.send_read_command(command)
-Send given command to Tello and wait for its response. Internal method, you normally wouldn't call this yourself.
-
-drone.send_read_command_float(command)
-Send given command to Tello and wait for its response. Parses the response to an integer Internal method, you normally wouldn't call this yourself.
-
-drone.send_read_command_int(command)
-Send given command to Tello and wait for its response. Parses the response to an integer Internal method, you normally wouldn't call this yourself.
-
-drone.set_mission_pad_detection_direction(x)
-Set mission pad detection direction. enable_mission_pads needs to be called first. When detecting both directions detecting frequency is 10Hz, otherwise the detection frequency is 20Hz.
-
-Parameters:
-
-Name	Type	Description	Default
-x		0 downwards only, 1 forwards only, 2 both directions	required
-drone.set_network_ports(state_packet_port, video_stream_port)
-Sets the ports for state packets and video streaming While you can use this command to reconfigure the Tello this library currently does not support non-default ports (TODO!)
-
-drone.set_speed(x)
-Set speed to x cm/s.
-
-Parameters:
-
-Name	Type	Description	Default
-x	int	10-100	required
-drone.set_video_bitrate(bitrate)
-Sets the bitrate of the video stream
-
-Use one of the following for the bitrate argument
-Tello.BITRATE_AUTO Tello.BITRATE_1MBPS Tello.BITRATE_2MBPS Tello.BITRATE_3MBPS Tello.BITRATE_4MBPS Tello.BITRATE_5MBPS
-
-drone.set_video_direction(direction)
-Selects one of the two cameras for video streaming The forward camera is the regular 1080x720 color camera The downward camera is a grey-only 320x240 IR-sensitive camera
-
-Use one of the following for the direction argument
-Tello.CAMERA_FORWARD Tello.CAMERA_DOWNWARD
-
-drone.set_video_fps(fps)
-Sets the frames per second of the video stream
-
-Use one of the following for the fps argument
-Tello.FPS_5 Tello.FPS_15 Tello.FPS_30
-
-drone.set_video_resolution(resolution)
-Sets the resolution of the video stream
-
-Use one of the following for the resolution argument
-Tello.RESOLUTION_480P Tello.RESOLUTION_720P
-
-drone.set_wifi_credentials(ssid, password)
-Set the Wi-Fi SSID and password. The Tello will reboot afterwords.
-
-drone.streamoff()
-Turn off video streaming.
-
-drone.streamon()
-Turn on video streaming. Use tello.get_frame_read afterwards. Video Streaming is supported on all tellos when in AP mode (i.e. when your computer is connected to Tello-XXXXXX WiFi ntwork). Currently Tello EDUs do not support video streaming while connected to a WiFi-network.
-
-!!! Note: If the response is 'Unknown command' you have to update the Tello firmware. This can be done using the official Tello app.
-
-drone.takeoff()
-Automatic takeoff.
-
-drone.turn_motor_off()
-Turns off the motor cooling mode
-
-drone.turn_motor_on()
-Turn on motors without flying (mainly for cooling)
-
-drone.udp_response_receiver() staticmethod
-Setup drone UDP receiver. This method listens for responses of Tello. Must be run from a background thread in order to not block the main thread. Internal method, you normally wouldn't call this yourself.
-
-drone.udp_state_receiver() staticmethod
-Setup state UDP receiver. This method listens for state information from Tello. Must be run from a background thread in order to not block the main thread. Internal method, you normally wouldn't call this yourself.
-
+REMINDER, RED FLAG, NOTICE. ENSURE YOU DO NOT USE PARAMETERS OUTSIDE OF THE RANGES LISTED BELOW OR YOU AND I WILL BOTH BE FIRED. WE DON'T WANT THAT.
+
+Sure, here's a more detailed version:
+
+**Drone Control**
+- `curve_xyz_speed(x1: int, y1: int, z1: int, x2: int, y2: int, z2: int, speed: int)`: Fly in a curve from (x1, y1, z1) to (x2, y2, z2) at a speed of cm/s. All parameters are required and must be within -500 and 500 for coordinates, and 10-60 for speed.
+- `curve_xyz_speed_mid(x1: int, y1: int, z1: int, x2: int, y2: int, z2: int, speed: int, mid: int)`: Similar to above but relative to mission pad with id 'mid'. All parameters are required, with 'mid' ranging from 1-8.
+- `disable_mission_pads()`: Disable mission pad detection. No parameters required.
+- `emergency()`: Stop all motors immediately. No parameters required.
+- `enable_mission_pads()`: Enable mission pad detection. No parameters required.
+- `end()`: End the drone object. No parameters required.
+- `flip(direction: str)`: Flip in a direction. The 'direction' parameter is required and can be 'l' (left), 'r' (right), 'f' (forward), or 'b' (back).
+
+**Drone Status**
+- `get_acceleration_x()`: Get X-Axis Acceleration. Returns a float.
+- `get_acceleration_y()`: Get Y-Axis Acceleration. Returns a float.
+- `get_acceleration_z()`: Get Z-Axis Acceleration. Returns a float.
+- `get_barometer()`: Get current barometer measurement in cm. Returns an integer.
+- `get_battery()`: Get current battery percentage. Returns an integer from 0-100.
+
+**Drone Movement**
+- `go_xyz_speed(x: int, y: int, z: int, speed: int)`: Fly to (x, y, z) relative to the current position at a speed of cm/s. All parameters are required and must be within -500 and 500 for coordinates, and 10-100 for speed.
+- `go_xyz_speed_mid(x: int, y: int, z: int, speed: int, mid: int)`: Similar to above but relative to mission pad with id 'mid'. All parameters are required, with 'mid' ranging from 1-8.
+- `move(direction: str, x: int)`: Fly in a direction 'x' cm. 'direction' can be 'up', 'down', 'left', 'right', 'forward' or 'back'. 'x' must be between 20-500.
+
+**Drone Configuration**
+- `set_speed(x: int)`: Set speed to 'x' cm/s. 'x' must be between 10-100.
+- `streamoff()`: Turn off video streaming. No parameters required.
+- `streamon()`: Turn on video streaming. No parameters required.
+- `takeoff()`: Automatic takeoff. No parameters required.
 Source code in djitellopy/tello.py
+
+**Drone Flips**
+- `flip_back()`: Flip backwards. No parameters required.
+- `flip_forward()`: Flip forward. No parameters required.
+- `flip_left()`: Flip to the left. No parameters required.
+- `flip_right()`: Flip to the right. No parameters required.
+
+**Drone Position and Orientation**
+- `get_pitch()`: Get pitch in degree. Returns an integer.
+- `get_roll()`: Get roll in degree. Returns an integer.
+- `get_yaw()`: Get yaw in degree. Returns an integer.
+
+**Drone Movements**
+- `move_back(x: int)`: Fly x cm backwards. 'x' must be between 20-500.
+- `move_down(x: int)`: Fly x cm down. 'x' must be between 20-500.
+- `move_forward(x: int)`: Fly x cm forward. 'x' must be between 20-500.
+- `move_left(x: int)`: Fly x cm left. 'x' must be between 20-500.
+- `move_right(x: int)`: Fly x cm right. 'x' must be between 20-500.
+- `move_up(x: int)`: Fly x cm up. 'x' must be between 20-500.
+
+**Drone Rotation**
+- `rotate_clockwise(x: int)`: Rotate x degree clockwise. 'x' must be between 1-360.
+- `rotate_counter_clockwise(x: int)`: Rotate x degree counter-clockwise. 'x' must be between 1-3600.
+
+**Drone Landing and Takeoff**
+- `land()`: Automatic landing. No parameters required.
+- `initiate_throw_takeoff()`: Allows you to take off by throwing your drone within 5 seconds of this command. No parameters required.
+
+**Drone Speed and Acceleration**
+- `get_speed_x()`: Get X-Axis Speed. Returns an integer.
+- `get_speed_y()`: Get Y-Axis Speed. Returns an integer.
+- `get_speed_z()`: Get Z-Axis Speed. Returns an integer.
+- `get_acceleration_x()`: Get X-Axis Acceleration. Returns a float.
+- `get_acceleration_y()`: Get Y-Axis Acceleration. Returns a float.
+- `get_acceleration_z()`: Get Z-Axis Acceleration. Returns a float.
+
+**Drone Mission Pad Detection**
+- `get_mission_pad_distance_x()`: Get X distance to current mission pad. Returns an integer.
+- `get_mission_pad_distance_y()`: Get Y distance to current mission pad. Returns an integer.
+- `get_mission_pad_distance_z()`: Get Z distance to current mission pad. Returns an integer.
+- `get_mission_pad_id()`: Get Mission pad ID of the currently detected mission pad. Returns an integer from 1-8 or -1 if none is detected.
+- `set_mission_pad_detection_direction(x: int)`: Set mission pad detection direction. 'x' can be 0 (downwards only), 1 (forwards only), or 2 (both directions).
+
+**Drone Temperature and Time**
+- `get_highest_temperature()`: Get highest temperature. Returns a float.
+- `get_lowest_temperature()`: Get lowest temperature. Returns a float.
+- `get_temperature()`: Get average temperature. Returns a float.
+- `get_flight_time()`: Get the time the motors have been active in seconds. Returns an integer.
+
+**Drone Video and Image Handling**
+- `set_video_direction(direction)`: Selects one of the two cameras for video streaming. The 'direction' parameter can be one of the following: Tello.CAMERA_FORWARD, Tello.CAMERA_DOWNWARD.

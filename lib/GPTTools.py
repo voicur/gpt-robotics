@@ -86,8 +86,8 @@ async def main():
     prompt = 'Please fly up 6 feet, then turn in a circle with radius 10 feet with the intial point being the center of the circle, but before you do anything else takeoff the drone please'
 
     models = {
-        'gpt-4': 0,
-        'gpt-3.5-turbo-16k': 10
+        'gpt-4': 15,
+        'gpt-3.5-turbo-16k': 15
     }
 
     tasks = []
