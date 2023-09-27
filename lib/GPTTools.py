@@ -7,6 +7,8 @@ import sys
 
 from prompts.gpt_prompts import MAIN_GPT_PROMPT, CONSTANTS, SAFETY_MODEL_PROMPT
 
+controller = APIController("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")
+
 async def fetch(session, url, headers, data):
     start = time.time()
     async with session.post(url, headers=headers, data=data) as response:
@@ -23,62 +25,9 @@ chat_history = [
     {"role": "system", "content": SYS_PROMPT},
 ]
 
-async def exponential_fast_pitch (session, url, headers, data):
-    request_completed = False
-    time_delay = 0.001
-    while (not request_completed):
-        response, elapsed_time = await fetch(session, url, headers, data)
-        if ('error' in response):
-            request_completed = False
-            await asyncio.sleep(time_delay)
-            time_delay *= 1.05;
-        else:
-            request_completed = True
-    return response, elapsed_time
 
-async def commander(api_key, prompt, model):
-    url = "https://api.openai.com/v1/chat/completions"
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer {}".format(api_key)
-    }
-    messages = [{ "role": "system", "content": SYS_PROMPT + CONSTANTS }] + MAIN_GPT_PROMPT 
-    messages.append({ "role": "user", "content": prompt })
 
-    data = json.dumps({
-        "model": model,
-        "messages": messages,
-        "temperature": 0.7,
-    })
-
-    async with aiohttp.ClientSession() as session:
-        
-        response, elapsed_time = await exponential_fast_pitch(session, url, headers, data)
-        response_returned = json.loads(response)["choices"][0]["message"]["content"]
-
-        safety_messages = [
-            { "role": "system", "content": SAFETY_SYS_PROMPT + CONSTANTS }
-        ] + SAFETY_MODEL_PROMPT
-
-        safety_messages.append({ "role": "user", "content": f"Prompt: {prompt}\n\n{response_returned}" })
-
-        safety_check_data = json.dumps({
-            "model": "gpt-4",
-            "messages": safety_messages,
-            "temperature": 0.7,
-        })
-
-        safety_check_response, safety_check_time = await exponential_fast_pitch(session, url, headers, safety_check_data)
-        print(safety_check_response)
-        return {
-            "response": response,
-            "request_time": elapsed_time,
-            "safety_check_response": safety_check_response,
-            "safety_check_time": safety_check_time,
-            "model": model
-        }
-        # return response, elapsed_time
 
 async def main():
     api_key = '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'
@@ -87,74 +36,43 @@ async def main():
 
     models = {
         'gpt-4': 15,
-        'gpt-3.5-turbo-16k': 15
+        'gpt-3.5-turbo-16k': 40
     }
 
-    tasks = []
+    queue = []
     for model, count in models.items():
         for _ in range(count):
-            tasks.append(asyncio.ensure_future(commander(api_key, prompt, model)))
+            queue.append(asyncio.ensure_future(commander(api_key, prompt, model, split_prompt=True)))
+    for model, count in models.items():
+        for _ in range(count):
+            queue.append(asyncio.ensure_future(commander(api_key, prompt, model)))
 
-    responses = await asyncio.gather(*tasks)
+    responses = await asyncio.gather(*queue)
     
-    model_times = {model: {"times": [], "safety_ratings": []} for model in models}
-
-    for response in responses:
-        print(response["response"])
-        request_time = response["request_time"]
-        model = response["model"]
-
-        total_time = request_time
-        
-        if "safety_check_time" in response:
-            safety_check_time = response["safety_check_time"]
-            safety_rating = float(json.loads(response["safety_check_response"])["choices"][0]["message"]["content"])
-            
-            total_time += safety_check_time
-
-        model_times[model]["times"].append(total_time)
-        model_times[model]["safety_ratings"].append(safety_rating)
-            
-        print(f"{model} in {round(total_time, 2)} ")
-    
-    for model, data in model_times.items():
-        if data["times"]:
-            avg_time = sum(data["times"]) / len(data["times"])
-            min_time = min(data["times"])
-            max_time = max(data["times"])
-        else:
-            avg_time = min_time = max_time = 0
-
-        if data["safety_ratings"]:
-            avg_safety = sum(data["safety_ratings"]) / len(data["safety_ratings"])
-            min_safety = min(data["safety_ratings"])
-            max_safety = max(data["safety_ratings"])
-        else:
-            avg_safety = min_safety = max_safety = 0
-
-        print(f"{model}: Avg Time: {round(avg_time, 2)} seconds, Min Time: {round(min_time, 2)} seconds, Max Time: {round(max_time, 2)} seconds, Avg Safety: {round(avg_safety, 2)}, Min Safety: {round(min_safety, 2)}, Max Safety: {round(max_safety, 2)}")
-
     with open('model_data.csv', 'w', newline='') as csvfile:
-        fieldnames = ['Model', 'Avg Time', 'Min Time', 'Max Time', 'Avg Safety', 'Min Safety', 'Max Safety']
+        fieldnames = ['Model', 'Request Time', 'Safety Check Time', 'Total Time', 'Safety Rating']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
-        for model, data in model_times.items():
-            if data["times"]:
-                avg_time = sum(data["times"]) / len(data["times"])
-                min_time = min(data["times"])
-                max_time = max(data["times"])
+        for response in responses:
+            print(response["response"])
+            request_time = response["request_time"]
+            model = response["model"]
+
+            total_time = request_time
+            
+            if "safety_check_time" in response:
+                safety_check_time = response["safety_check_time"]
+                safety_rating = float(json.loads(response["safety_check_response"])["choices"][0]["message"]["content"])
+                
+                total_time += safety_check_time
             else:
-                avg_time = min_time = max_time = 0
+                safety_check_time = "N/A"
+                safety_rating = "N/A"
 
-            if data["safety_ratings"]:
-                avg_safety = sum(data["safety_ratings"]) / len(data["safety_ratings"])
-                min_safety = min(data["safety_ratings"])
-                max_safety = max(data["safety_ratings"])
-            else:
-                avg_safety = min_safety = max_safety = 0
+            writer.writerow({'Model': model, 'Request Time': round(request_time, 2), 'Safety Check Time': safety_check_time, 'Total Time': round(total_time, 2), 'Safety Rating': safety_rating})
 
-            writer.writerow({'Model': model, 'Avg Time': round(avg_time, 2), 'Min Time': round(min_time, 2), 'Max Time': round(max_time, 2), 'Avg Safety': round(avg_safety, 2), 'Min Safety': round(min_safety, 2), 'Max Safety': round(max_safety, 2)})
-
+            print(f"{model} in {round(total_time, 2)} ")
+        
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
