@@ -2,17 +2,11 @@ import aiohttp
 import asyncio
 import time
 import json
-import csv
-import sys
 
-from prompts.gpt_prompts import MAIN_GPT_PROMPT, CONSTANTS, SAFETY_MODEL_PROMPT
-
-with open("prompts/docs_prompt.txt", "r") as promptFile:
-    SYS_PROMPT = promptFile.read()
-
-with open("prompts/safety_prompt.txt", "r") as promptFile:
-    SAFETY_SYS_PROMPT = promptFile.read()
-
+# Prompts and Intermediate Lists
+from prompts.gpt_prompts import *
+with open("prompts/docs_prompt.txt", "r") as promptFile: SYS_PROMPT = promptFile.read()
+with open("prompts/safety_prompt.txt", "r") as promptFile: SAFETY_SYS_PROMPT = promptFile.read()
 
 class Controller:
     def __init__(self, api_key):
@@ -51,13 +45,14 @@ class Controller:
 
     # Ask GPT to split the prompt into individual commands
     async def split_prompt(self, prompt):
-        messages = SPLIT_PROMPT + CONSTANTS
+        messages = SPLIT_PROMPT
         messages.append({"role": "user", "content": prompt})
 
-        response = await self.chat_complex(prompt, "gpt-4", messages, 0.5)
+        response, _ = await self.chat("gpt-4", messages, 0.5)
 
         # Get each prompt
         commands = [i for i in response.split("\n") if i]
+
         return commands
 
     # async def rate_complexity(self, commands):
@@ -92,21 +87,30 @@ class Controller:
     #     for command, response in zip(assigned_commands, responses):
     #         print(f"Executed '{command[0]}' using {command[1]}: {response}")
 
-    async def commander(api_key, prompt, model, split_prompt=False):
-        url = "https://api.openai.com/v1/chat/completions"
+    async def designate (self, prompt, model, split_prompt=False, iteration=-1):
+        if split_prompt:
+            split_prompts = prompt
+        else:
+            split_prompts = [prompt]
+        
+        queue = []
+        for each_prompt in split_prompts:
+            messages = await self.generate_messages(SYS_PROMPT, MAIN_GPT_PROMPT, each_prompt)
+            queue.append(asyncio.ensure_future(self.get_full_data(model, messages, each_prompt, iteration=iteration)))
 
-        messages = await self.generate_messages(SYS_PROMPT, MAIN_GPT_PROMPT, prompt)
+        responses = await asyncio.gather(*queue)
+        print(responses)
 
+        return responses
+
+    async def get_full_data (self, model, messages, prompt, iteration=-1):
         async with aiohttp.ClientSession() as session:
             response, elapsed_time = await self.chat(model, messages)
-
             safety_messages = await self.generate_messages(SAFETY_SYS_PROMPT, SAFETY_MODEL_PROMPT, f"Prompt: {prompt}\n\n{response}")            
-
-            safety_check_response, safety_check_time = await chat("gpt-4", safety_messages)
-
-            print(safety_check_response)
+            safety_check_response, safety_check_time = await self.chat("gpt-4", safety_messages)
 
             return {
+                "iteration": iteration,
                 "response": response,
                 "request_time": elapsed_time,
                 "safety_check_response": safety_check_response,
@@ -114,43 +118,46 @@ class Controller:
                 "model": model,
             }
 
-        async def generate_messages (SYSTEM_PROMPT, PROMPT_HISTORY_INTERMEDIARY, request_content, constants=CONSTANTS):
-            # Intermediary gives a good overview of what it does
-            PROMPT_HISTORY = PROMPT_HISTORY_INTERMEDIARY
-            
-            generated_messages = [
-                {"role": "system", "content": SYSTEM_PROMPT + constants}
-            ] + PROMPT_HISTORY
+    async def generate_messages (self, SYSTEM_PROMPT, PROMPT_HISTORY_INTERMEDIARY, request_content, constants=CONSTANTS):
+        # Intermediary gives a good overview of what it does
+        PROMPT_HISTORY = PROMPT_HISTORY_INTERMEDIARY
+        
+        generated_messages = [
+            {"role": "system", "content": SYSTEM_PROMPT + constants}
+        ] + PROMPT_HISTORY
 
-            generated_messages.append(
-                {"role": "user", "content": request_content}
-            )
+        generated_messages.append(
+            {"role": "user", "content": request_content}
+        )
 
-            return generated_messages
+        return generated_messages
 
-        async def keep_fetching (session, url, headers, data):
-            request_completed = False
-            time_delay = 0.001
-            while not request_completed:
-                response, elapsed_time = await fetch(session, url, headers, data)
-                if "error" in response:
-                    request_completed = False
-                    await asyncio.sleep(time_delay)
-                    time_delay += 0.001
-                else:
-                    request_completed = True
-            return response, elapsed_time
-
-
-async def main():
-    controller = APIController("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")
-    prompt = "Run to end, turn left, before that fly up 60 feet and you fly up enable the speaker"
-    commands = await controller.split_prompt(prompt)
-    print(commands)
-    # rated_commands = await controller.rate_complexity(commands)
-    # assigned_commands = controller.assign_models(rated_commands)
-    # await controller.execute_tasks(assigned_commands)
+    async def keep_fetching (self, session, url, headers, data):
+        request_completed = False
+        time_delay = 0.1
+        while not request_completed:
+            response, elapsed_time = await self.fetch(session, url, headers, data)
+            if "error" in response:
+                print("Delayed", sep=" ")
+                request_completed = False
+                if (time_delay < 5): time_delay *= 2
+                await asyncio.sleep(time_delay)
+                
+            else:
+                print("Not delayed", sep=" ")
+                request_completed = True
+        return response, elapsed_time
 
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+# async def main():
+#     controller = APIController("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")
+#     prompt = "Run to end, turn left, before that fly up 60 feet and you fly up enable the speaker"
+#     commands = await controller.split_prompt(prompt)
+#     print(commands)
+#     # rated_commands = await controller.rate_complexity(commands)
+#     # assigned_commands = controller.assign_models(rated_commands)
+#     # await controller.execute_tasks(assigned_commands)
+
+
+# loop = asyncio.get_event_loop()
+# loop.run_until_complete(main())
