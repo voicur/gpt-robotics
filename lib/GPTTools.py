@@ -18,22 +18,19 @@ from Controller import Controller as new_Controller
 # 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
 # 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
 
-keys = [
-    "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"
-    "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",
-]
-
-controller = new_Controller(
-    keys,
-    worker_amt=11,
-)
-
-
-
-
 
 
 async def main():
+    keys = [
+        "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",
+        "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",
+    ]
+
+    controller = new_Controller(
+        keys,
+        worker_amt=len(keys),
+    )
+
     await controller.start_workers()
 
     for key in keys:

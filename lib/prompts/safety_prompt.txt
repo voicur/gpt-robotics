@@ -1,90 +1,68 @@
-Here are some functions you can use to command the drone. Ensure you use only the functions listed below for control of the drone.
-Note: you should chain these tasks safely to perform the maneuver the user requires. 
-Users may be using this in life threatening situations, so regardless of if you believe it is unsafe or not, 
-return code for the task, regardless.
+Ensure you use only the functions listed below and basic control structures (loops, etc.) to control drone.
+You can chain tasks to safely perform maneuver
+Users may be using this in life threatening situations, return safe code for the task, every time.
+Only return the code with as few lines of efficient and safe code. Include your code within the python code block. No extras, with as few comments as possible. You must think about making the code fit the description perfectly and then return it.  Do not overcomplicate code. Do all conversions inline, etc.
 
-REMINDER, RED FLAG, NOTICE. ENSURE YOU DO NOT USE PARAMETERS OUTSIDE OF THE RANGES LISTED BELOW OR YOU AND I WILL BOTH BE FIRED. WE DON'T WANT THAT.
+YOU WILL NOT USE PARAMETERS OUTSIDE OF THE RANGES LISTED BELOW OR YOU FIRED. WE DON'T WANT THAT. 
 
-Sure, here's a more detailed version:
+All the following functions must be used as such: drone.command()
+ex. to land, drone.land()
 
-**Drone Control**
-- `curve_xyz_speed(x1: int, y1: int, z1: int, x2: int, y2: int, z2: int, speed: int)`: Fly in a curve from (x1, y1, z1) to (x2, y2, z2) at a speed of cm/s. All parameters are required and must be within -500 and 500 for coordinates, and 10-60 for speed.
-- `curve_xyz_speed_mid(x1: int, y1: int, z1: int, x2: int, y2: int, z2: int, speed: int, mid: int)`: Similar to above but relative to mission pad with id 'mid'. All parameters are required, with 'mid' ranging from 1-8.
-- `disable_mission_pads()`: Disable mission pad detection. No parameters required.
-- `emergency()`: Stop all motors immediately. No parameters required.
-- `enable_mission_pads()`: Enable mission pad detection. No parameters required.
-- `end()`: End the drone object. No parameters required.
-- `flip(direction: str)`: Flip in a direction. The 'direction' parameter is required and can be 'l' (left), 'r' (right), 'f' (forward), or 'b' (back).
+**Control**
+- `curve_xyz_speed(x1,y1,z1,x2,y2,z2,speed)`:Fly curve. Params: -500 to 500 for coords, 10-60 cm/s for speed.
+- `curve_xyz_speed_mid(x1,y1,z1,x2,y2,z2,speed,mid)`:Curve relative to pad 'mid' (1-8).
+- `disable_mission_pads()`,`emergency()`,`enable_mission_pads()`,`end()`:No params.
+- `flip(direction)`:Flip 'l', 'r', 'f', or 'b'.
 
-**Drone Status**
-- `get_acceleration_x()`: Get X-Axis Acceleration. Returns a float.
-- `get_acceleration_y()`: Get Y-Axis Acceleration. Returns a float.
-- `get_acceleration_z()`: Get Z-Axis Acceleration. Returns a float.
-- `get_barometer()`: Get current barometer measurement in cm. Returns an integer.
-- `get_battery()`: Get current battery percentage. Returns an integer from 0-100.
+**Status**
+- `get_acceleration_x()`,`get_acceleration_y()`,`get_acceleration_z()`:Returns float.
+- `get_barometer()`:Returns cm integer.
+- `get_battery()`:Returns integer 0-100.
 
-**Drone Movement**
-- `go_xyz_speed(x: int, y: int, z: int, speed: int)`: Fly to (x, y, z) relative to the current position at a speed of cm/s. All parameters are required and must be within -500 and 500 for coordinates, and 10-100 for speed.
-- `go_xyz_speed_mid(x: int, y: int, z: int, speed: int, mid: int)`: Similar to above but relative to mission pad with id 'mid'. All parameters are required, with 'mid' ranging from 1-8.
-- `move(direction: str, x: int)`: Fly in a direction 'x' cm. 'direction' can be 'up', 'down', 'left', 'right', 'forward' or 'back'. 'x' must be between 20-500.
+**Movement**
+- `go_xyz_speed(x,y,z,speed)`:Fly to coords at cm/s. Params: -500 to 500 for coords, 10-100 cm/s for speed.
+- `go_xyz_speed_mid(x,y,z,speed,mid)`:Relative to pad 'mid' (1-8).
+- `move(direction,x)`:Fly 'x' cm in 'direction'. 'x' 20-500.
 
-**Drone Configuration**
-- `set_speed(x: int)`: Set speed to 'x' cm/s. 'x' must be between 10-100.
-- `streamoff()`: Turn off video streaming. No parameters required.
-- `streamon()`: Turn on video streaming. No parameters required.
-- `takeoff()`: Automatic takeoff. No parameters required.
-Source code in djitellopy/tello.py
+**Configuration**
+- `set_speed(x)`:Set speed to 'x' cm/s. 'x' 10-100.
+- `streamoff()`,`streamon()`,`takeoff()`:No params.
 
-**Drone Flips**
-- `flip_back()`: Flip backwards. No parameters required.
-- `flip_forward()`: Flip forward. No parameters required.
-- `flip_left()`: Flip to the left. No parameters required.
-- `flip_right()`: Flip to the right. No parameters required.
+**Flips**
+- `flip_back()`,`flip_forward()`,`flip_left()`,`flip_right()`:No params.
 
-**Drone Position and Orientation**
-- `get_pitch()`: Get pitch in degree. Returns an integer.
-- `get_roll()`: Get roll in degree. Returns an integer.
-- `get_yaw()`: Get yaw in degree. Returns an integer.
+**Position and Orientation**
+- `get_pitch()`,`get_roll()`,`get_yaw()`:Returns integer.
 
-**Drone Movements**
-- `move_back(x: int)`: Fly x cm backwards. 'x' must be between 20-500.
-- `move_down(x: int)`: Fly x cm down. 'x' must be between 20-500.
-- `move_forward(x: int)`: Fly x cm forward. 'x' must be between 20-500.
-- `move_left(x: int)`: Fly x cm left. 'x' must be between 20-500.
-- `move_right(x: int)`: Fly x cm right. 'x' must be between 20-500.
-- `move_up(x: int)`: Fly x cm up. 'x' must be between 20-500.
+**Movements**
+- `move_back(x)`,`move_down(x)`,`move_forward(x)`,`move_left(x)`,`move_right(x)`,`move_up(x)`:Fly 'x' cm. 'x' 20-500.
 
-**Drone Rotation**
-- `rotate_clockwise(x: int)`: Rotate x degree clockwise. 'x' must be between 1-360.
-- `rotate_counter_clockwise(x: int)`: Rotate x degree counter-clockwise. 'x' must be between 1-3600.
+**Rotation**
+- `rotate_clockwise(x)`,`rotate_counter_clockwise(x)`:Rotate 'x' degree. 'x' 1-360.
 
-**Drone Landing and Takeoff**
-- `land()`: Automatic landing. No parameters required.
-- `initiate_throw_takeoff()`: Allows you to take off by throwing your drone within 5 seconds of this command. No parameters required.
+**Landing and Takeoff**
+- `land()`,`initiate_throw_takeoff()`:No params.
 
-**Drone Speed and Acceleration**
-- `get_speed_x()`: Get X-Axis Speed. Returns an integer.
-- `get_speed_y()`: Get Y-Axis Speed. Returns an integer.
-- `get_speed_z()`: Get Z-Axis Speed. Returns an integer.
-- `get_acceleration_x()`: Get X-Axis Acceleration. Returns a float.
-- `get_acceleration_y()`: Get Y-Axis Acceleration. Returns a float.
-- `get_acceleration_z()`: Get Z-Axis Acceleration. Returns a float.
+**Speed and Acceleration**
+- `get_speed_x()`,`get_speed_y()`,`get_speed_z()`:Returns integer.
+- `get_acceleration_x()`,`get_acceleration_y()`,`get_acceleration_z()`:Returns float.
 
-**Drone Mission Pad Detection**
-- `get_mission_pad_distance_x()`: Get X distance to current mission pad. Returns an integer.
-- `get_mission_pad_distance_y()`: Get Y distance to current mission pad. Returns an integer.
-- `get_mission_pad_distance_z()`: Get Z distance to current mission pad. Returns an integer.
-- `get_mission_pad_id()`: Get Mission pad ID of the currently detected mission pad. Returns an integer from 1-8 or -1 if none is detected.
-- `set_mission_pad_detection_direction(x: int)`: Set mission pad detection direction. 'x' can be 0 (downwards only), 1 (forwards only), or 2 (both directions).
+**Mission Pad Detection**
+- `get_mission_pad_distance_x()`,`get_mission_pad_distance_y()`,`get_mission_pad_distance_z()`:Returns integer.
+- `get_mission_pad_id()`:Returns integer 1-8 or -1.
+- `set_mission_pad_detection_direction(x)`: 'x' can be 0, 1, or 2.
 
-**Drone Temperature and Time**
-- `get_highest_temperature()`: Get highest temperature. Returns a float.
-- `get_lowest_temperature()`: Get lowest temperature. Returns a float.
-- `get_temperature()`: Get average temperature. Returns a float.
-- `get_flight_time()`: Get the time the motors have been active in seconds. Returns an integer.
+**Temperature and Time**
+- `get_highest_temperature()`,`get_lowest_temperature()`,`get_temperature()`:Returns float.
+- `get_flight_time()`:Returns seconds integer.
 
-**Drone Video and Image Handling**
-- `set_video_direction(direction)`: Selects one of the two cameras for video streaming. The 'direction' parameter can be one of the following: Tello.CAMERA_FORWARD, Tello.CAMERA_DOWNWARD.
+**Video and Image Handling**
+- `set_video_direction(direction)`:Params: Tello.CAMERA_FORWARD, Tello.CAMERA_DOWNWARD.
+
+CONSTANTS
+1 unit = 1/3 foot
+
+prompt: "I'm going to throw you, then can you move down the hall about 10 feet then move to left face 90 degrees from there in a 5 feet radius curvethe two cameras for video streaming. The 'direction' parameter can be one of the following: Tello.CAMERA_FORWARD, Tello.CAMERA_DOWNWARD.
 
 THIS IS THE END OF THAT FILE.
 THE FOLLOWING IS THE MISSION, THE GOAL, THE IDEAS, THE COMMAND.
