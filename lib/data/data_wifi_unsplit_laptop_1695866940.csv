@@ -1,0 +1,165 @@
+Iteration,Model,Request Time,Safety Check Time,Total Time,Safety Rating,Code
+0,gpt-4,12.36,0.8130826950073242,13.18,90,"
+```python
+drone.takeoff()
+drone.move_up(18) # 6 feet = 18 units
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10) # 10 feet = 30 units
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```"
+1,gpt-4,11.84,0.7501261234283447,12.59,99,"
+```python
+drone.takeoff()
+drone.move_up(6*3) # converting feet to units
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10)
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```"
+2,gpt-4,11.78,0.7051403522491455,12.48,99,"
+```python
+drone.takeoff()
+drone.move_up(18)
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10)
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```"
+3,gpt-4,11.95,1.6014251708984375,13.55,99,"
+```python
+drone.takeoff()
+drone.move_up(18)
+drone.curve_xyz_speed(0, 0, 0, 30, 0, 0, 10)
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10)
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+```
+"
+4,gpt-4,13.25,1.0900609493255615,14.34,99,"
+```python
+drone.connect()
+drone.takeoff()
+drone.move_up(18) # 6 feet * 3 = 18 units
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10) # 10 feet * 3 = 30 units
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```"
+5,gpt-4,11.5,0.5634968280792236,12.06,99,"
+```python
+drone.takeoff()
+drone.move_up(18) # 1 unit = 1/3 foot, so 6 feet = 18 units
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10) 
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```"
+6,gpt-4,13.4,1.888152837753296,15.29,99,"
+```python
+drone.takeoff()
+drone.move_up(18) # 6 feet = 18 units
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10) # 10 feet = 30 units
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```
+"
+7,gpt-4,10.45,0.9722082614898682,11.42,99,"
+```python
+drone.takeoff()
+drone.move_up(18)
+drone.curve_xyz_speed(0, 30, 0, 30, 0, 0, 10)
+drone.curve_xyz_speed(30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, 30, 0, 10)
+```"
+8,gpt-4,13.03,0.5159151554107666,13.54,99,"
+```python
+drone.takeoff()
+drone.move_up(18) # 1 unit = 1/3 foot, so 6 feet = 18 units
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10) # 1 unit = 1/3 foot, so 10 feet = 30 units
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```
+"
+9,gpt-4,9.79,0.5007979869842529,10.29,99,"
+```python
+drone.takeoff()
+drone.move_up(18)
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10)
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```
+"
+10,gpt-3.5-turbo-16k,4.03,0.46326231956481934,4.49,60,"```python
+drone.connect()
+drone.takeoff()
+drone.move_up(6 * 3) # convert feet to units
+drone.curve_xyz_speed_mid(0, 0, 0, 0, 10 * 3, 0, 10, 1)
+```
+Note: The radius of the circle is given in feet, but the drone API uses units. Since 1 unit is equal to 1/3 foot, we need to multiply the radius by 3 to convert it to units."
+11,gpt-3.5-turbo-16k,2.09,0.4223639965057373,2.51,71,"```python
+drone.connect()
+drone.takeoff()
+drone.move_up(18)
+drone.curve_xyz_speed(0, 10, 0, -10, 0, 0, 10)
+```
+"
+12,gpt-3.5-turbo-16k,1.98,0.5168929100036621,2.5,30,"```python
+drone.connect()
+drone.takeoff()
+drone.move_up(6 * 3)  # Convert 6 feet to units
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 10)
+```"
+13,gpt-3.5-turbo-16k,4.12,0.4305398464202881,4.55,85,"```python
+drone.takeoff()
+drone.move_up(18)
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 20)
+drone.curve_xyz_speed(0, 10, 0, -10, 0, 0, 20)
+drone.curve_xyz_speed(-10, 0, 0, 0, -10, 0, 20)
+drone.curve_xyz_speed(0, -10, 0, 10, 0, 0, 20)
+```"
+14,gpt-3.5-turbo-16k,1.75,0.7027301788330078,2.45,20,"```python
+drone.connect()
+drone.takeoff()
+drone.move_up(6*3)  # Convert 6 feet to units
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 10)
+```"
+15,gpt-3.5-turbo-16k,1.11,1.7335669994354248,2.85,99,"```python
+drone.connect()
+drone.takeoff()
+drone.move_up(18)
+drone.rotate_clockwise(360)
+```
+"
+16,gpt-3.5-turbo-16k,2.55,0.4057168960571289,2.96,73,"```python
+drone.connect()
+drone.takeoff()
+drone.move_up(6*3)  # Convert 6 feet to units
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 10)  # Radius of 10 feet converted to units
+```
+"
+17,gpt-3.5-turbo-16k,3.65,0.8333339691162109,4.48,80,"```python
+drone.connect()
+drone.takeoff()
+drone.move_up(6 * 3)  # Convert 6 feet to units (1 unit = 1/3 foot)
+drone.curve_xyz_speed_mid(10, 0, 0, 0, 10, 0, 10, 5)
+```
+
+Note: The `curve_xyz_speed_mid()` function is used to fly in a circle with a given radius around a specific point. In this case, the center of the circle is the initial position of the drone."
+18,gpt-3.5-turbo-16k,2.42,0.6846709251403809,3.1,75,"```python
+drone.connect()
+drone.takeoff()
+drone.move_up(6 * 3)  # Convert 6 feet to units
+drone.curve_xyz_speed(10 * 3, 0, 0, 0, 10 * 3, 0, 10)  # Convert 10 feet to units and set speed to 10 cm/s
+```"
+19,gpt-3.5-turbo-16k,3.93,0.5035660266876221,4.43,80,"```python
+drone.connect()
+drone.takeoff()
+drone.move_up(2 * 6)  # Convert 6 feet to 12 units
+drone.curve_xyz_speed_mid(0, 10, 0, -10, 0, 0, 10, 5)
+```
+Note: The drone moves up 6 feet, which is equivalent to moving up 12 units. Then it performs a curve motion with a radius of 10 feet, starting from the center of the circle. The speed is set to 10 cm/s and the curve is performed within 5 seconds."

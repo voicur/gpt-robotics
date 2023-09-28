@@ -7,8 +7,12 @@ from itertools import cycle
 
 # Prompts and Intermediate Lists
 from prompts.gpt_prompts import *
-with open("prompts/docs_prompt.txt", "r") as promptFile: SYS_PROMPT = promptFile.read()
-with open("prompts/safety_prompt.txt", "r") as promptFile: SAFETY_SYS_PROMPT = promptFile.read()
+
+with open("prompts/docs_prompt.txt", "r") as promptFile:
+    SYS_PROMPT = promptFile.read()
+with open("prompts/safety_prompt.txt", "r") as promptFile:
+    SAFETY_SYS_PROMPT = promptFile.read()
+
 
 # The controller classes encapsulates the process of splitting up requests and doing so efficiently
 class Controller:
@@ -20,7 +24,7 @@ class Controller:
 
         self.api_key = keys[0]
 
-        # Additionally, the python openai library does not allow you to use a certain api key for a request, 
+        # Additionally, the python openai library does not allow you to use a certain api key for a request,
         # so we manually implement this functionality.
         self.headers = {
             "Content-Type": "application/json",
@@ -36,10 +40,12 @@ class Controller:
         self.last_api_key_time = time.time()
 
         atexit.register(self.cleanup)
-        
-    # This simple function creates the workers (by default the loaded amount of api keys * 2 workers per key, to account for rate limiting)    
-    async def start_workers (self):
-        self.workers = [asyncio.create_task(self.worker()) for _ in range(self.worker_amt)]
+
+    # This simple function creates the workers (by default the loaded amount of api keys * 2 workers per key, to account for rate limiting)
+    async def start_workers(self):
+        self.workers = [
+            asyncio.create_task(self.worker()) for _ in range(self.worker_amt)
+        ]
 
     # One of the larger functions, just using the fetch function to "chat" with the openai api, with many parameters for flexibility.
     async def chat(
@@ -50,7 +56,6 @@ class Controller:
         override_headers=None,
         override_response_data=None,
     ):
-        
         # You can change this endpoint url for flexibility
         url = "https://api.openai.com/v1/chat/completions"
 
@@ -68,12 +73,14 @@ class Controller:
         # Asynchronously wait for a request to be completed
         async with aiohttp.ClientSession() as session:
             # Get the response using the worker queue
-            response, elapsed_time = await self.fetch(session, url, override_headers, data)
-        
+            response, elapsed_time = await self.fetch(
+                session, url, override_headers, data
+            )
+
         # If override_response_data is enabled, then we return the full response
         if override_response_data is True:
             return json.loads(response)
-        
+
         # If the parameter is not enabled for override_response_data, then we return just the response text
         response_text = json.loads(response)["choices"][0]["message"]["content"]
         return response_text, elapsed_time
@@ -93,17 +100,25 @@ class Controller:
         return commands
 
     # This function takes in the split prompt and actually gets the return data for each instance of each model. (10 made for each 9 gpt-4 and 1 gpt-3.5-turbo)
-    async def designate (self, prompt, model, split_prompt=False, iteration=-1):
+    async def designate(self, prompt, model, split_prompt=False, iteration=-1):
         if split_prompt:
             split_prompts = prompt
         else:
             split_prompts = [prompt]
-        
+
         queue = []
         for each_prompt in split_prompts:
             # Get the data for each part of the split prompt
-            messages = await self.generate_messages(SYS_PROMPT, MAIN_GPT_PROMPT, each_prompt)
-            queue.append(asyncio.ensure_future(self.get_full_data(model, messages, each_prompt, iteration=iteration)))
+            messages = await self.generate_messages(
+                SYS_PROMPT, MAIN_GPT_PROMPT, each_prompt
+            )
+            queue.append(
+                asyncio.ensure_future(
+                    self.get_full_data(
+                        model, messages, each_prompt, iteration=iteration
+                    )
+                )
+            )
 
         # Gather the data from each part of the split prompt and then get them
         responses = await asyncio.gather(*queue)
@@ -111,11 +126,17 @@ class Controller:
         return responses
 
     # This function uses the functions to get the data from each model, and then safety check them all.
-    async def get_full_data (self, model, messages, prompt, iteration=-1):
+    async def get_full_data(self, model, messages, prompt, iteration=-1):
         async with aiohttp.ClientSession() as session:
             response, elapsed_time = await self.chat(model, messages)
-            safety_messages = await self.generate_messages(SAFETY_SYS_PROMPT, SAFETY_MODEL_PROMPT, f"Prompt: {prompt}\n\n{response}")            
-            safety_check_response, safety_check_time = await self.chat("gpt-4", safety_messages)
+            safety_messages = await self.generate_messages(
+                SAFETY_SYS_PROMPT,
+                SAFETY_MODEL_PROMPT,
+                f"Prompt: {prompt}\n\n{response}",
+            )
+            safety_check_response, safety_check_time = await self.chat(
+                "gpt-4", safety_messages
+            )
 
             return {
                 "iteration": iteration,
@@ -127,20 +148,24 @@ class Controller:
             }
 
     # Prompts require three things to work well, this function is what packages the following to be used:
-        # A SYSTEM Prompt, a prompt that tells the api what they are working with and any documentation or description of the task
-        # A PROMPT_HISTORY, where it shows a user (me) entering a prompt, and correcting its responses to improve its own response, 
-        # and the request_content, which is the actual prompt for the api.
-    async def generate_messages (self, SYSTEM_PROMPT, PROMPT_HISTORY_INTERMEDIARY, request_content, constants=CONSTANTS):
+    # A SYSTEM Prompt, a prompt that tells the api what they are working with and any documentation or description of the task
+    # A PROMPT_HISTORY, where it shows a user (me) entering a prompt, and correcting its responses to improve its own response,
+    # and the request_content, which is the actual prompt for the api.
+    async def generate_messages(
+        self,
+        SYSTEM_PROMPT,
+        PROMPT_HISTORY_INTERMEDIARY,
+        request_content,
+        constants=CONSTANTS,
+    ):
         # Intermediary gives a good overview of what it does
         PROMPT_HISTORY = PROMPT_HISTORY_INTERMEDIARY
-        
+
         generated_messages = [
             {"role": "system", "content": SYSTEM_PROMPT + constants}
         ] + PROMPT_HISTORY
 
-        generated_messages.append(
-            {"role": "user", "content": request_content}
-        )
+        generated_messages.append({"role": "user", "content": request_content})
 
         return generated_messages
 
@@ -169,20 +194,26 @@ class Controller:
         while True:
             # queue.get removes the item from the queue, and then the function processes it.
             task_id, session, url, headers, data = await self.queue.get()
-            response, elapsed_time = await self.fetch_internal(session, url, headers, data)
+            response, elapsed_time = await self.fetch_internal(
+                session, url, headers, data
+            )
 
-            # If it is rate limited, put it back in the queue after waiting for a bit (the bit is the global wait time for the rate limiter, 
+            # If it is rate limited, put it back in the queue after waiting for a bit (the bit is the global wait time for the rate limiter,
             # which is increased exponentially, so everything will halt after a rate limit, then spring back to life after the next queue (it resets the time after a successful request)
             if "error" in response:
                 print("Delayed", response)
                 if self.time_delay < 5:
                     self.time_delay *= 2
+                print(self.time_delay)
+                print(self.queue.qsize(), self.queue)
 
                 # TODO, CHECK IF THIS MAY BE BETTER AFTER THE SLEEP.
                 await self.shift_api_key(time_recieved=time.time())
 
                 await asyncio.sleep(self.time_delay)
-                await self.queue.put((task_id, session, url, headers, data))  # Put the task back in the queue
+                await self.queue.put(
+                    (task_id, session, url, headers, data)
+                )  # Put the task back in the queue
             else:
                 print("On Time")
                 self.time_delay = 0.001  # Reset the delay
@@ -192,14 +223,14 @@ class Controller:
 
     # This function changes the api key in use to prevent rate limiting.
     # Contains a built in debounce timer of 0.05 to prevent too many shifts in the api key, preventing the same one from being used twice in a row.
-    async def shift_api_key (self, time_recieved, debounce_time=0.05):
+    async def shift_api_key(self, time_recieved, debounce_time=0.5):
         if (time_recieved - self.last_api_key_time) > debounce_time:
             self.api_key = next(self.key_cycle)
             self.last_api_key_time = time_recieved
         self.headers = {
             "Content-Type": "application/json",
             "Authorization": "Bearer {}".format(self.api_key),
-        }
+        }   
 
     # Clear the workers after a program quit
     def cleanup(self):

@@ -8,9 +8,8 @@ import os
 
 from Controller import Controller as new_Controller
 
-
 #### bad
-# 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 
+# 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
 # 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
 # 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
 
@@ -19,22 +18,9 @@ from Controller import Controller as new_Controller
 # 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
 
 
-
-async def main():
-    keys = [
-        "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",
-        "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",
-    ]
-
-    controller = new_Controller(
-        keys,
-        worker_amt=len(keys),
-    )
-
-    await controller.start_workers()
-
+async def preflight_test(keys, control):
     for key in keys:
-        response = await controller.chat(
+        response = await control.chat(
             "gpt-4",
             [{"role": "user", "content": "Hello, how are you?"}],
             override_headers={
@@ -45,18 +31,33 @@ async def main():
         )
         print(key, response)
 
-    api_key = "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"
 
-    
+async def main():
+    attempt_name = input("What to catalogue this attempt as?: ")
+
+    keys = [
+        "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",
+        "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",
+    ]
+
+    controller = new_Controller(
+        keys,
+        worker_amt=len(keys) * 2,
+    )
+
+    await controller.start_workers()
+
+    # await preflight_test(keys, controller)
 
     prompt = "Please fly up 6 feet, then turn in a circle with radius 10 feet with the intial point being the center of the circle, but before you do anything else takeoff the drone please"
 
-    models = {"gpt-4": 5, "gpt-3.5-turbo-16k": 5}
+    models = {"gpt-4": 10, "gpt-3.5-turbo-16k": 10}
 
     queue = []
     index = 0
 
-    split_prompt = await controller.split_prompt(prompt)
+    # split_prompt = await controller.split_prompt(prompt)
+    split_prompt = [prompt]
 
     for model, count in models.items():
         for _ in range(count):
@@ -75,7 +76,7 @@ async def main():
     for resp in responses_bunched:
         responses += resp
 
-    filename = f"./data/model_data_{int(time.time()) }.csv"
+    filename = f"./data/data_{attempt_name}_{int(time.time()) }.csv"
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, "w", newline="") as csvfile:
         fieldnames = [

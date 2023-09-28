@@ -1,0 +1,314 @@
+Iteration,Model,Request Time,Safety Check Time,Total Time,Safety Rating,Code
+0,gpt-4,2.18,1.0212798118591309,3.2,99,"
+```python
+drone.takeoff()
+```
+"
+0,gpt-4,2.25,0.48314905166625977,2.74,20,"
+```python
+drone.move_up(18)
+```
+"
+0,gpt-4,8.34,0.6347742080688477,8.98,70,"
+```python
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 20)
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 20)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 20)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 20)
+```"
+1,gpt-4,2.08,0.6460511684417725,2.73,99,"
+```python
+drone.takeoff()
+```
+"
+1,gpt-4,1.19,0.549278974533081,1.74,20,"
+```python
+drone.move_up(18)
+```"
+1,gpt-4,9.19,0.5743658542633057,9.76,85,"
+```python
+drone.curve_xyz_speed(0, 30, 0, -30, 60, 0, 10)
+drone.curve_xyz_speed(-30, 60, 0, -60, 30, 0, 10)
+drone.curve_xyz_speed(-60, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, 30, 0, 10)
+```
+"
+2,gpt-4,1.31,0.5762879848480225,1.88,99,"
+```python
+drone.takeoff()
+```
+"
+2,gpt-4,1.37,0.6531610488891602,2.02,20,"
+```python
+drone.move_up(18)
+```
+"
+2,gpt-4,8.68,0.5258340835571289,9.2,85,"
+```python
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10)
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```"
+3,gpt-4,1.11,0.8449220657348633,1.95,99,"```python
+drone.takeoff()
+```"
+3,gpt-4,1.24,0.5765178203582764,1.82,40,"
+```python
+drone.move_up(18)
+```"
+3,gpt-4,10.58,0.5905869007110596,11.17,85,"```python
+# Conversion: 10 feet to units (1 foot = 3 units)
+radius = 10 * 3
+
+# Making the drone move in a circle
+drone.curve_xyz_speed(radius, 0, 0, 0, radius, 0, 10)
+drone.curve_xyz_speed(0, radius, 0, -radius, 0, 0, 10)
+drone.curve_xyz_speed(-radius, 0, 0, 0, -radius, 0, 10)
+drone.curve_xyz_speed(0, -radius, 0, radius, 0, 0, 10)
+```"
+4,gpt-4,1.22,0.9375901222229004,2.16,99,"
+```python
+drone.takeoff()
+```
+"
+4,gpt-4,1.29,0.5191550254821777,1.8,20,"
+```python
+drone.move_up(18) 
+```"
+4,gpt-4,8.45,0.8431289196014404,9.3,85,"
+```python
+drone.curve_xyz_speed(20, 0, 0, 0, 20, 0, 10)
+drone.curve_xyz_speed(0, 20, 0, -20, 0, 0, 10)
+drone.curve_xyz_speed(-20, 0, 0, 0, -20, 0, 10)
+drone.curve_xyz_speed(0, -20, 0, 20, 0, 0, 10)
+```"
+5,gpt-4,1.34,1.0481071472167969,2.39,99,"
+```python
+drone.takeoff()
+```"
+5,gpt-4,1.54,0.7742588520050049,2.31,20,"
+```python
+drone.move_up(18)
+```
+"
+5,gpt-4,8.81,0.8419246673583984,9.65,80,"
+```python
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10)
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```"
+6,gpt-4,1.17,0.8737478256225586,2.04,99,"
+```python
+drone.takeoff()
+```"
+6,gpt-4,1.3,0.5890111923217773,1.89,60,"
+```python
+drone.move_up(18)
+```
+"
+6,gpt-4,8.94,0.4969038963317871,9.43,85,"```python
+# convert feet to units
+radius = 10 * 3 
+
+drone.curve_xyz_speed(radius, 0, 0, 0, radius, 0, 10)
+drone.curve_xyz_speed(0, radius, 0, -radius, 0, 0, 10)
+drone.curve_xyz_speed(-radius, 0, 0, 0, -radius, 0, 10)
+drone.curve_xyz_speed(0, -radius, 0, radius, 0, 0, 10)
+```"
+7,gpt-4,1.74,0.5052230358123779,2.25,99,"
+```python
+drone.takeoff()
+```
+"
+7,gpt-4,1.46,0.7221651077270508,2.18,20,"
+```python
+drone.move_up(18)
+```
+"
+7,gpt-4,9.41,0.7744667530059814,10.18,85,"
+```python
+# Converting feet to units
+radius_units = 10 * 3
+
+drone.curve_xyz_speed(radius_units, 0, 0, 0, radius_units, 0, 10)
+drone.curve_xyz_speed(0, radius_units, 0, -radius_units, 0, 0, 10)
+drone.curve_xyz_speed(-radius_units, 0, 0, 0, -radius_units, 0, 10)
+drone.curve_xyz_speed(0, -radius_units, 0, radius_units, 0, 0, 10)
+```
+"
+8,gpt-4,1.77,0.5125577449798584,2.29,99,"
+```python
+drone.takeoff()
+```"
+8,gpt-4,1.74,0.484529972076416,2.22,20,"
+```python
+drone.move_up(18)
+```
+"
+8,gpt-4,9.36,0.5239748954772949,9.88,72,"
+```python
+drone.curve_xyz_speed(0, 10*3, 0, -10*3, 0, 0, 10)
+drone.curve_xyz_speed(-10*3, 0, 0, 0, -10*3, 0, 10)
+drone.curve_xyz_speed(0, -10*3, 0, 10*3, 0, 0, 10)
+drone.curve_xyz_speed(10*3, 0, 0, 0, 10*3, 0, 10)
+```
+"
+9,gpt-4,1.44,0.4498410224914551,1.89,99,"
+```python
+drone.takeoff()
+```"
+9,gpt-4,1.18,0.5882792472839355,1.77,20,"
+```python
+drone.move_up(18)
+```"
+9,gpt-4,8.38,0.3709890842437744,8.75,85,"
+```python
+drone.curve_xyz_speed(30, 0, 0, 0, 30, 0, 10)
+drone.curve_xyz_speed(0, 30, 0, -30, 0, 0, 10)
+drone.curve_xyz_speed(-30, 0, 0, 0, -30, 0, 10)
+drone.curve_xyz_speed(0, -30, 0, 30, 0, 0, 10)
+```"
+10,gpt-3.5-turbo-16k,0.71,0.38503122329711914,1.1,99,"```python
+drone.takeoff()
+```"
+10,gpt-3.5-turbo-16k,0.88,0.45058608055114746,1.33,20,"```python
+drone.move_up(18)
+```"
+10,gpt-3.5-turbo-16k,5.57,0.7935800552368164,6.36,60,"```python
+import math
+
+radius = 10 * 3  # Convert 10 feet to units
+
+# Calculate the distance to move in each segment of the circle
+distance = 2 * math.pi * radius / 4
+
+# Move in a curve to make a circular path
+for _ in range(4):
+    drone.curve_xyz_speed(0, radius, 0, distance, radius, 0, 10)
+    drone.curve_xyz_speed(-radius, 0, 0, -radius, distance, 0, 10)
+    drone.curve_xyz_speed(0, -radius, 0, -distance, -radius, 0, 10)
+    drone.curve_xyz_speed(radius, 0, 0, radius, -distance, 0, 10)
+```"
+11,gpt-3.5-turbo-16k,0.89,0.5477371215820312,1.43,99,"```python
+drone.connect()
+drone.takeoff()
+```"
+11,gpt-3.5-turbo-16k,1.57,0.7816052436828613,2.35,90,"To convert 6 feet to units, we multiply by 3 (since 1 unit is equal to 1/3 foot).
+
+```python
+drone.move_up(6 * 3)
+```"
+11,gpt-3.5-turbo-16k,3.96,0.47767019271850586,4.44,85,"```python
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 10)
+drone.curve_xyz_speed(0, 10, 0, -10, 0, 0, 10)
+drone.curve_xyz_speed(-10, 0, 0, 0, -10, 0, 10)
+drone.curve_xyz_speed(0, -10, 0, 10, 0, 0, 10)
+```"
+12,gpt-3.5-turbo-16k,1.5,0.6570260524749756,2.15,99,"```python
+drone.connect()
+drone.takeoff()
+```"
+12,gpt-3.5-turbo-16k,1.01,0.4582939147949219,1.47,20,"```python
+drone.move_up(18)
+```"
+12,gpt-3.5-turbo-16k,2.72,0.7869880199432373,3.5,65,"```python
+import math
+
+radius = 10  # radius in feet
+circumference = 2 * math.pi * radius  # circumference in feet
+circumference_in_units = int(circumference * 3)  # circumference in units
+
+drone.curve_xyz_speed(0, 0, 0, 0, circumference_in_units, 0, 10)
+```"
+13,gpt-3.5-turbo-16k,0.69,0.42651987075805664,1.12,99,"```python
+drone.takeoff()
+```"
+13,gpt-3.5-turbo-16k,0.81,0.3854789733886719,1.2,20,"```python
+drone.move_up(18)
+```"
+13,gpt-3.5-turbo-16k,3.67,0.6855149269104004,4.35,78,"```python
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 10)
+drone.curve_xyz_speed(0, 10, 0, -10, 0, 0, 10)
+drone.curve_xyz_speed(-10, 0, 0, 0, -10, 0, 10)
+drone.curve_xyz_speed(0, -10, 0, 10, 0, 0, 10)
+```"
+14,gpt-3.5-turbo-16k,0.78,0.3715989589691162,1.16,99,"```python
+drone.takeoff()
+```"
+14,gpt-3.5-turbo-16k,0.71,0.713918924331665,1.42,20,"```python
+drone.move_up(18)
+```"
+14,gpt-3.5-turbo-16k,4.28,1.6973137855529785,5.97,85,"```python
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 10)
+drone.curve_xyz_speed(0, 10, 0, -10, 0, 0, 10)
+drone.curve_xyz_speed(-10, 0, 0, 0, -10, 0, 10)
+drone.curve_xyz_speed(0, -10, 0, 10, 0, 0, 10)
+```"
+15,gpt-3.5-turbo-16k,0.79,1.6355819702148438,2.43,99,"```python
+drone.takeoff()
+```
+"
+15,gpt-3.5-turbo-16k,0.8,0.37273502349853516,1.17,20,"```python
+drone.move_up(18)
+```"
+15,gpt-3.5-turbo-16k,4.15,0.4499990940093994,4.6,85,"
+```python
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 10)
+drone.curve_xyz_speed(0, 10, 0, -10, 0, 0, 10)
+drone.curve_xyz_speed(-10, 0, 0, 0, -10, 0, 10)
+drone.curve_xyz_speed(0, -10, 0, 10, 0, 0, 10)
+```
+"
+16,gpt-3.5-turbo-16k,1.01,0.36766910552978516,1.37,99,"```python
+drone.connect()
+drone.takeoff()
+```"
+16,gpt-3.5-turbo-16k,0.84,0.3525388240814209,1.19,20,"```python
+drone.move_up(6*3)
+```"
+16,gpt-3.5-turbo-16k,3.53,0.38323378562927246,3.91,88,"```python
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 10)
+drone.curve_xyz_speed(0, 10, 0, -10, 0, 0, 10)
+drone.curve_xyz_speed(-10, 0, 0, 0, -10, 0, 10)
+drone.curve_xyz_speed(0, -10, 0, 10, 0, 0, 10)
+```"
+17,gpt-3.5-turbo-16k,1.09,0.6643891334533691,1.75,99,"```python
+drone.takeoff()
+```"
+17,gpt-3.5-turbo-16k,0.95,0.671532154083252,1.62,20,"```python
+drone.move_up(18)
+```"
+17,gpt-3.5-turbo-16k,3.44,0.40915894508361816,3.85,85,"```python
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 10)
+drone.curve_xyz_speed(0, 10, 0, -10, 0, 0, 10)
+drone.curve_xyz_speed(-10, 0, 0, 0, -10, 0, 10)
+drone.curve_xyz_speed(0, -10, 0, 10, 0, 0, 10)
+```"
+18,gpt-3.5-turbo-16k,0.72,0.48865795135498047,1.21,99,"```python
+drone.takeoff()
+```"
+18,gpt-3.5-turbo-16k,1.04,0.408419132232666,1.44,20,"```python
+drone.move_up(18)
+```
+"
+18,gpt-3.5-turbo-16k,1.21,0.5356910228729248,1.75,90,"```python
+drone.rotate_clockwise(360)
+```
+
+Note: The radius mentioned in the prompt is in units, not feet."
+19,gpt-3.5-turbo-16k,2.81,0.608832836151123,3.42,99,"```python
+drone.connect()
+drone.takeoff()
+```"
+19,gpt-3.5-turbo-16k,0.78,0.46201109886169434,1.24,30,"```python
+drone.move_up(18)
+```"
+19,gpt-3.5-turbo-16k,3.76,0.4372596740722656,4.2,85,"
+```python
+drone.curve_xyz_speed(10, 0, 0, 0, 10, 0, 10)
+drone.curve_xyz_speed(0, 10, 0, -10, 0, 0, 10)
+drone.curve_xyz_speed(-10, 0, 0, 0, -10, 0, 10)
+drone.curve_xyz_speed(0, -10, 0, 10, 0, 0, 10)
+```"
