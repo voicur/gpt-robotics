@@ -1,12 +1,9 @@
 import speech_recognition as sr
-import time
-from openai import OpenAI
-import os
 import tempfile
+from faster_whisper import WhisperModel
 
-# Initialize the OpenAI client
-client = OpenAI(api_key="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")
-
+# Initialize the Whisper model to run on CPU with float32 precision
+model = WhisperModel("large-v2", device="cpu", compute_type="float32")
 
 def listen_for_speech(recognizer, microphone, timeout=1):
     """
@@ -21,36 +18,19 @@ def listen_for_speech(recognizer, microphone, timeout=1):
         audio_data = recognizer.listen(source, timeout=timeout)
     return audio_data
 
-def transcribe_audio(audio_data, model="whisper-1"):
+def transcribe_audio(audio_file_path):
     """
-    Transcribe the provided audio data.
-    :param audio_data: The audio data to transcribe.
-    :param model: The Whisper model to use.
+    Transcribe the provided audio file.
+    :param audio_file_path: The path to the audio file to transcribe.
     :return: The transcription text.
     """
-    # Save the audio data to a temporary file in a supported format
-    with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as fp:
-        fp.write(audio_data.get_wav_data())
-        temp_filename = fp.name
-    
-    # Read the temporary file for sending to the API
-    with open(temp_filename, 'rb') as audio_file:
-        # Send the audio file to the API for transcription
-        try:
-            response = client.audio.transcriptions.create(
-                model=model,
-                file=audio_file
-            )
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
-    
-    # Extract the text from the response
-    transcription = response.text
-    
-    # Delete the temporary file
-    os.remove(temp_filename)
-    
+    # Transcribe the audio file using faster-whisper
+    segments, _ = model.transcribe(audio_file_path, beam_size=5)
+    segments = list(segments)  # The transcription will actually run here.
+
+    # Extract the text from the segments
+    transcription = " ".join(segment.text for segment in segments)
+
     return transcription
 
 def automatic_mode():
@@ -66,16 +46,19 @@ def automatic_mode():
             audio_data = listen_for_speech(recognizer, microphone)
             # If the audio data is empty, continue listening
             if not audio_data or audio_data.get_raw_data() == b'':
+                print("No speech detected, continuing to listen...")
                 continue
             print("Processing speech...")
-            transcription = transcribe_audio(audio_data)
+            with tempfile.NamedTemporaryFile(suffix='.wav', delete=True) as fp:
+                fp.write(audio_data.get_wav_data())
+                fp.seek(0)
+                transcription = transcribe_audio(fp.name)
             print("Transcription:", transcription)
         except sr.WaitTimeoutError:
-            # Timeout reached, no speech detected
             continue
         except Exception as e:
             print(f"An error occurred: {e}")
-            break;
+            break
 
 def manual_mode():
     """
@@ -87,9 +70,13 @@ def manual_mode():
     input("Press Enter to start recording")
     print("Recording started. Press Enter again to stop.")
     audio_data = listen_for_speech(recognizer, microphone, timeout=None)
-    input("Press Enter to stop recording and process speech.")
+    print("Press Enter to stop recording and process speech.")
+    input()
     print("Processing speech...")
-    transcription = transcribe_audio(audio_data)
+    with tempfile.NamedTemporaryFile(suffix='.wav', delete=True) as fp:
+        fp.write(audio_data.get_wav_data())
+        fp.seek(0)
+        transcription = transcribe_audio(fp.name)
     print("Transcription:", transcription)
 
 if __name__ == "__main__":
