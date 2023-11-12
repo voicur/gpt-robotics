@@ -5,8 +5,6 @@ from openai import OpenAI
 from faster_whisper import WhisperModel
 import os
 
-import time
-
 # Define the abstract base class
 class VoiceDetectorRT(abc.ABC):
     def __init__(self):
@@ -85,27 +83,12 @@ class DeviceVoiceDetector(VoiceDetectorRT):
         self.model = WhisperModel(model_size, device=device, compute_type=compute_type)
 
     def transcribe_audio(self, audio_data):
-        transcription_results = {}
-        beam_sizes = [4, 5, 8, 240]
-        
-        # Loop through the beam sizes and perform transcription for each
-        for beam_size in beam_sizes:
-            with tempfile.NamedTemporaryFile(suffix='.wav', delete=True) as fp:
-                fp.write(audio_data.get_wav_data())
-                fp.seek(0)
-                start_time = time.time()  # Start time measurement
-                segments, _ = self.model.transcribe(fp.name, beam_size=beam_size)
-                segments = list(segments)  # The transcription will actually run here.
-                duration = time.time() - start_time  # End time measurement
-                transcription = " ".join(segment.text for segment in segments)
-                transcription_results[beam_size] = (transcription, duration)
-        
-        # Print the results for each beam size
-        for beam_size, (transcription, duration) in transcription_results.items():
-            print(f"Beam size: {beam_size}, Duration: {duration:.2f}s, Transcription: {transcription}")
-        
-        # Return the transcription and duration for the first beam size
-        return transcription_results[1]
+        with tempfile.NamedTemporaryFile(suffix='.wav', delete=True) as fp:
+            fp.write(audio_data.get_wav_data())
+            fp.seek(0)
+            segments, _ = self.model.transcribe(fp.name, beam_size=8)
+            segments = list(segments)  # The transcription will actually run here.
+        return " ".join(segment.text for segment in segments)
 
 # Main execution logic
 if __name__ == "__main__":
