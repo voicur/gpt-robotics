@@ -4,15 +4,6 @@ from openai import OpenAI
 import os
 import tempfile
 
-from whisper_jax import FlaxWhisperPipline
-import jax.numpy as jnp
-
-# instantiate pipeline with bfloat16 and enable batching
-pipeline = FlaxWhisperPipline("openai/whisper-large-v2", dtype=jnp.float16)
-
-# transcribe and return timestamps
-# outputs = pipeline("audio.mp3",  task="transcribe", return_timestamps=True)
-
 # Initialize the OpenAI client
 client = OpenAI(api_key="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")
 
@@ -30,7 +21,7 @@ def listen_for_speech(recognizer, microphone, timeout=1):
         audio_data = recognizer.listen(source, timeout=timeout)
     return audio_data
 
-def transcribe_audio(audio_data, model="whisper-2"):
+def transcribe_audio(audio_data, model="whisper-1"):
     """
     Transcribe the provided audio data.
     :param audio_data: The audio data to transcribe.
@@ -46,18 +37,16 @@ def transcribe_audio(audio_data, model="whisper-2"):
     with open(temp_filename, 'rb') as audio_file:
         # Send the audio file to the API for transcription
         try:
-            outputs = pipeline(audio_file)
-            # response = client.audio.transcriptions.create(
-            #     model=model,
-            #     file=audio_file
-            # )
+            response = client.audio.transcriptions.create(
+                model=model,
+                file=audio_file
+            )
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
     
     # Extract the text from the response
-    # transcription = response.text
-    transcription = outputs
+    transcription = response.text
     
     # Delete the temporary file
     os.remove(temp_filename)
