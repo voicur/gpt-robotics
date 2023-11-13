@@ -8,6 +8,14 @@ import time
 
 # IN MM
 specs = {
+    "FOCAL_LENGTH": 26,  # 25mm <-- on a 35mm equivalent i assume!
+    # THIS MAY HAVE TO BE SWITCHED TO 2 as that is the actual sensor thinger
+    "SENSOR_WIDTH": 6.8,  # mm
+    "MODEL": "yolov8x.pt",
+    "MINIMUM_CONFIDENCE": 0.5,
+}
+
+specs_drone = {
     "FOCAL_LENGTH": 25,  # 25mm <-- on a 35mm equivalent i assume!
     # THIS MAY HAVE TO BE SWITCHED TO 2 as that is the actual sensor thinger
     "SENSOR_WIDTH": 2.77,  # mm
@@ -183,9 +191,9 @@ realWidthArray = {
 
 model = YOLO(specs["MODEL"])
 
-drone = Tello()
-drone.connect()
-drone.streamon()
+# drone = Tello()
+# drone.connect()
+# drone.streamon()
 
 def getTelloStream (drone):
     udp_addr = drone.get_udp_video_address() + "?overrun_nonfatal=1&fifo_size=50000000"
@@ -213,22 +221,22 @@ def getTelloStream (drone):
 cap = cv2.VideoCapture(0)
 
 def main():
-    pipe = getTelloStream(drone)
+    # pipe = getTelloStream(drone)
     while True:
-        # read 1920*1080*3 bytes (= 1 frame)
-        # raw_image = pipe.stdout.read(960 * 720 * 3)
-        ret, raw_image = cap.read()
-        # transform the byte read into a numpy array
-        image = numpy.frombuffer(raw_image, dtype="uint8")
-        # image = image.reshape(
-        #     (720, 960, 3)
-        # )  # Notice how height is specified first and the width is specified second
+        # # read 1920*1080*3 bytes (= 1 frame)
+        # # raw_image = pipe.stdout.read(960 * 720 * 3)
+        # ret, raw_image = cap.read()
+        # # transform the byte read into a numpy array
+        # image = numpy.frombuffer(raw_image, dtype="uint8")
+        # # image = image.reshape(
+        # #     (720, 960, 3)
+        # # )  # Notice how height is specified first and the width is specified second
 
-        # frame = imutils.resize(image, width=400)
-        # H, W, _ = frame.shape
+        # # frame = imutils.resize(image, width=400)
+        # # H, W, _ = frame.shape
 
-        # image = cv2.imread("IMG_3029.jpeg")
-        image = cv2.resize(frame, (640, 480), interpolation = cv2.INTER_LINEAR)
+        image = cv2.imread("test_image.jpeg")
+        # image = cv2.resize(frame, (640, 480), interpolation = cv2.INTER_LINEAR)
         results = model(image, conf=specs["MINIMUM_CONFIDENCE"])
 
         img=image

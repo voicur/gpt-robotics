@@ -5,23 +5,25 @@ import json
 import atexit
 from itertools import cycle
 
-# Prompts and Intermediate Lists
-from prompts.gpt_prompts import *
-
-with open("prompts/docs_prompt.txt", "r") as promptFile:
-    SYS_PROMPT = promptFile.read()
-with open("prompts/safety_prompt.txt", "r") as promptFile:
-    SAFETY_SYS_PROMPT = promptFile.read()
-
 
 # The controller classes encapsulates the process of splitting up requests and doing so efficiently
 class Controller:
-    def __init__(self, keys, worker_amt=1):
+    def __init__(self, config_file, worker_amt=1):
+        from config_file import KEYS, SPLIT_PROMPT_LIST, DRONE_PROMPT_LIST, SAFETY_PROMPT_LIST, CONSTANTS_BLOCK, CODE_DOCUMENTATION_BLOCK, SAFETY_PROMPT_TOTAL_BLOCK
         # It works by having a queue of requests, and a set of workers that process the requests
 
         # One step the code takes to reduce time taken is to swap rate limited keys on the go.
+        keys = KEYS
         self.key_cycle = cycle(keys)
 
+        self.CONSTANTS = CONSTANTS_BLOCK
+        self.SAFETY_PROMPT = SAFETY_PROMPT_TOTAL_BLOCK
+        self.SAFETY_PROMPT_LIST = SAFETY_PROMPT_LIST
+        self.CODE_DOCUMENTATION_BLOCK = CODE_DOCUMENTATION_BLOCK
+
+        self.DRONE_PROMPT = DRONE_PROMPT_LIST
+        self.SPLIT_PROMPT = SPLIT_PROMPT_LIST
+        
         self.api_key = keys[0]
 
         # Additionally, the python openai library does not allow you to use a certain api key for a request,
@@ -88,7 +90,7 @@ class Controller:
     # Ask GPT to split the prompt into individual commands
     async def split_prompt(self, prompt):
         # You will see many CAPS variables, these are long "system" prompts that accuratly describe what GPT should generate.
-        messages = SPLIT_PROMPT
+        messages = self.SPLIT_PROMPT
         messages.append({"role": "user", "content": prompt})
 
         # Get the response from the API, discard the time taken.
@@ -110,7 +112,7 @@ class Controller:
         for each_prompt in split_prompts:
             # Get the data for each part of the split prompt
             messages = await self.generate_messages(
-                SYS_PROMPT, MAIN_GPT_PROMPT, each_prompt
+                self.CODE_DOCUMENTATION_BLOCK, self.DRONE_PROMPT_LIST, each_prompt, self.CONSTANTS_BLOCK
             )
             queue.append(
                 asyncio.ensure_future(
@@ -130,8 +132,8 @@ class Controller:
         async with aiohttp.ClientSession() as session:
             response, elapsed_time = await self.chat(model, messages)
             safety_messages = await self.generate_messages(
-                SAFETY_SYS_PROMPT,
-                SAFETY_MODEL_PROMPT,
+                self.SAFETY_PROMPT,
+                self.SAFETY_PROMPT_LIST,
                 f"Prompt: {prompt}\n\n{response}",
             )
             safety_check_response, safety_check_time = await self.chat(
@@ -156,7 +158,7 @@ class Controller:
         SYSTEM_PROMPT,
         PROMPT_HISTORY_INTERMEDIARY,
         request_content,
-        constants=CONSTANTS,
+        constants,
     ):
         # Intermediary gives a good overview of what it does
         PROMPT_HISTORY = PROMPT_HISTORY_INTERMEDIARY

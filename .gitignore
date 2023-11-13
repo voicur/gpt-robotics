@@ -4,3 +4,4 @@ __pycache__/
 .DS_Store
 misc/yolov8x.pt
 misc/yolov8m.pt
+v2/models/yolov8x.pt

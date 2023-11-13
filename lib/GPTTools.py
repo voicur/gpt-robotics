@@ -8,6 +8,8 @@ import os
 
 from Controller import Controller as new_Controller
 
+from config.gpt_prompts import CONSTANTS, SAFETY_PROMPT, SYSTEM_PROMPT, DRONE_PROMPT, SPLIT_PROMPT
+
 #### bad
 # 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
 # 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
@@ -43,6 +45,11 @@ async def main():
     controller = new_Controller(
         keys,
         worker_amt=len(keys) * 2,
+        safety_prompt=SAFETY_PROMPT,
+        system_prompt=SYSTEM_PROMPT,
+        drone_prompt=DRONE_PROMPT,
+        split_prompt=SPLIT_PROMPT,
+        constants=CONSTANTS
     )
 
     await controller.start_workers()
