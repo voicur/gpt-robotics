@@ -14,9 +14,8 @@ import cv2
 import os
 import sys
 from controllers.Application import app as App
-
-# ----------------------------- STATIC VARIABLES DEFINITIONS ----------------------------- #
-
+import threading
+import numpy as np
 
 
 # ----------------------------- VARIABLES DEFINITIONS ----------------------------- #
@@ -45,8 +44,8 @@ def main ():
             try: 
                 question = input(colors.YELLOW + "AirSim> " + colors.ENDC)
             except KeyboardInterrupt:
-                app.cleanup()
-                drone.emergency();
+                drone.emergency()
+                app.cleanup
 
             # Shortcuts without AI
             if question == "quit" or question == "exit":
@@ -68,8 +67,19 @@ def main ():
                 drone.emergency()
                 break
 
-            base64_image = app.get_wait_for_b64_image();
-            
+            base64_image = app.get_wait_for_b64_image()
+
+            image_bytes = base64.b64decode(base64_image)
+
+            # Convert the bytes to a NumPy array
+            nparr = np.frombuffer(image_bytes, np.uint8)
+
+            # Decode the NumPy array into an image
+            new_image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+            cv2.imshow('Image Window', new_image)
+            cv2.waitKey(1)
+
             # # response, session_chat_history = ask(question, b64_image_or_url=getPreviewFrameB64("capture.jpg"), prev_chat_history=session_chat_history)
             response = app.ask(question, b64_image_or_url=base64_image)
             print(f"\n{response}\n")
@@ -86,6 +96,8 @@ def main ():
     except KeyboardInterrupt:
         app.cleanup()
         drone.emergency();
+        is_running = False
+        thread.join()
         # drone.emergency();
         print("quitting")
         video_tools.cleanup()

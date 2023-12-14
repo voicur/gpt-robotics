@@ -5,7 +5,7 @@ import threading
 # from Command import Command
 
 import openai
-
+import time
 import requests
 import asyncio
 
@@ -39,7 +39,9 @@ class app:
         print("Beginning active daemon")
         while True:
             try:
+                # start_time = time.time()
                 battery_query_info = self.drone.query_battery()
+                # print(time.time() - start_time)
                 if (battery_query_info != "ok"):
                     pass
             except:
@@ -118,6 +120,7 @@ class app:
             return None
 
     def ask(self, prompt, b64_image_or_url=None, system=False):
+        start_time = time.time()
         conf = self.conf
 
         # the system prompt, gives code context and a basic training combo.
@@ -180,6 +183,7 @@ class app:
         )
         
         self.prev_chat_history = chat_history
+        print(time.time() - start_time)
 
         # return the results and the chat history to overwrite in the main (how to global var?)
         return the_content

@@ -195,18 +195,7 @@ DRONE_PROMPT_LIST = [
     },
     {
         "role": "user",
-        "content": "Ensure that you only return the python code. Any time wasted means people being killed off.\n\nPrompt: Can you make me go in a circle with radius 20 units",
-    },
-    {
-        "role": "assistant",
-        "content": """
-        ```python
-        drone.curve_xyz_speed(20, 0, 0, 0, 20, 0, 10)
-        drone.curve_xyz_speed(0, 20, 0, -20, 0, 0, 10)
-        drone.curve_xyz_speed(-20, 0, 0, 0, -20, 0, 10)
-        drone.curve_xyz_speed(0, -20, 0, 20, 0, 0, 10)
-        ```
-        """,
+        "content": "Ensure that you only return the python code. Any time wasted means people being killed off.",
     },
     {
         "role": "user",
@@ -338,6 +327,31 @@ SAFETY_PROMPT_TOTAL_BLOCK = """
 
     All the following functions must be used as such: drone.command()
     ex. to land, drone.land()
+
+Drone Flight Control - Curve Movement
+
+The `curve_xyz_speed` function commands the drone to execute a curved trajectory between two points in 3D space, defined by the coordinates (x1, y1, z1) and (x2, y2, z2), at a specified speed.
+
+Usage:
+    drone.curve_xyz_speed(x1, y1, z1, x2, y2, z2, speed)
+
+Parameters:
+    x1, y1, z1: The coordinates of the starting point of the curve relative to the drone's current position (in cm).
+    x2, y2, z2: The coordinates of the ending point of the curve relative to the drone's current position (in cm).
+    speed: The speed of the drone along the curve (in cm/s).
+
+Constraints:
+    - Coordinate parameters (x1, y1, z1, x2, y2, z2) must be within the range of -500 to 500 cm.
+    - Speed parameter must be within the range of 10 to 60 cm/s.
+    - The radius of the curve must not exceed the drone's maximum operational limits. Consult the drone's specifications for the maximum allowable radius.
+    - Ensure that there are no obstacles in the drone's path before executing the curve command.
+    The error message "Three points are collinear!" indicates that the control points specified for the curve_xyz_speed command are in a straight line. In the context of a Bezier curve, which is what the curve_xyz_speed command is likely trying to implement, the control points must form a triangle for the curve to be properly defined.
+
+For a quadratic Bezier curve, you typically have three points: a start point, a control point, and an end point. The curve is formed by the path that a point takes as it moves from the start point to the end point, influenced by the control point. If all three points are on a straight line, the curve is effectively just a straight line, which is not a valid input for the curve_xyz_speed function.
+
+To fix this issue, you need to provide control points that are not collinear. You can adjust either the control point or the end point to ensure that they are not all on the same straight line.
+
+Here's an example of how you might adjust the command:
 
     **Control**
     - `curve_xyz_speed(x1,y1,z1,x2,y2,z2,speed)`:Fly curve. Params: -500 to 500 for coords, 10-60 cm/s for speed.
@@ -487,7 +501,7 @@ CODE_DOCUMENTATION_BLOCK += COMMAND_MARKER_BLOCK
 
 # GPT keys, first one preferred for some tasks
 KEYS = [
-    "sk-your-key-here",
+    "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"
 ]
 
 KEY = KEYS[0]
